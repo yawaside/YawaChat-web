@@ -3,6 +3,7 @@ import SiteHeader from "./components/SiteHeader";
 import Hero from "./components/Hero";
 import Platforms from "./components/Platforms";
 import Features from "./components/Features";
+import Live from "./components/Live";
 import Styles from "./components/Styles";
 import Install from "./components/Install";
 import Versions from "./components/Versions";
@@ -25,6 +26,7 @@ export default function App() {
         <Hero />
         <Platforms />
         <Features />
+        <Live />
         <Styles />
         <Install />
         <Versions />
