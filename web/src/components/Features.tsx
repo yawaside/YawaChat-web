@@ -1,39 +1,33 @@
-import { FEATURE_GROUPS, type Feature } from "../lib/data";
-import FeatureGlyph from "./FeatureGlyph";
-import SectionHeading from "./SectionHeading";
-
-export function FeatureItem({ feature }: { feature: Feature }) {
-  return (
-    <div>
-      <h4 className="flex items-center gap-2 text-[16px] font-semibold leading-snug">
-        <FeatureGlyph icon={feature.icon} className="size-[18px] shrink-0 text-ink-faint" />
-        {feature.title}
-      </h4>
-      <p className="mt-1.5 text-[15px] leading-relaxed text-ink-soft">{feature.text}</p>
-    </div>
-  );
-}
+import { FEATURE_TABS } from "../lib/data";
+import Clause from "./Clause";
 
 export default function Features() {
-  return (
-    <section id="features" className="wrap py-16 sm:py-24">
-      <SectionHeading
-        title="Что умеет YawaChat"
-        lead="Лента, донаты, озвучка и модерация — в одном приложении. Ничего не нужно докупать и настраивать с нуля."
-      />
+  const total = FEATURE_TABS.reduce((sum, tab) => sum + tab.features.length, 0);
 
-      <div className="mt-11 space-y-10">
-        {FEATURE_GROUPS.map((group) => (
-          <div key={group.id} className="grid gap-5 border-t border-line pt-6 md:grid-cols-[180px_minmax(0,1fr)] md:gap-10">
-            <h3 className="font-sans text-[15px] font-semibold leading-relaxed text-ink-faint">{group.title}</h3>
-            <div className="grid gap-x-12 gap-y-7 sm:grid-cols-2">
-              {group.features.map((feature) => (
-                <FeatureItem key={feature.title} feature={feature} />
+  return (
+    <Clause
+      id="features"
+      number="01"
+      label="Возможности"
+      meta={`${total} функций`}
+      title="Одно окно вместо семи вкладок"
+      lead="Лента, донаты, озвучка, оверлей и модерация — по полкам, как в инструкции."
+    >
+      <div>
+        {FEATURE_TABS.map((tab) => (
+          <section key={tab.id} className="mt-7 first:mt-0">
+            <h3 className="font-sans text-[13px] font-medium text-faint">{tab.label}</h3>
+            <dl className="mt-2 grid gap-x-12 gap-y-5 sm:grid-cols-2">
+              {tab.features.map((feature) => (
+                <div key={feature.title} className="border-t border-white/10 pt-3">
+                  <dt className="text-[15.5px] font-semibold text-text">{feature.title}</dt>
+                  <dd className="mt-1.5 text-[14.4px] leading-[1.62] text-muted">{feature.text}</dd>
+                </div>
               ))}
-            </div>
-          </div>
+            </dl>
+          </section>
         ))}
       </div>
-    </section>
+    </Clause>
   );
 }

@@ -1,142 +1,118 @@
-import { STYLE_NAMES } from "../lib/data";
-import SectionHeading from "./SectionHeading";
+import Clause from "./Clause";
 
-const AIR_PALETTE = ["#f3eeff", "#c9b8ff", "#8b6cf0", "#4c3aa8"];
-const STUDIO_PALETTE = ["#0a0b0e", "#23262d", "#a3e635", "#ecfccb"];
-
-function AirPreview() {
-  return (
-    <div className="app-window-light p-3" aria-hidden="true">
-      <div className="flex items-center gap-1.5 px-1 pb-2.5">
-        <span className="size-1.5 rounded-full bg-[#241a55]/25" />
-        <span className="size-1.5 rounded-full bg-[#241a55]/25" />
-        <span className="size-1.5 rounded-full bg-[#241a55]/25" />
-        <span className="ml-2 text-[10px] font-semibold text-[#241a55]/60">Воздух</span>
-      </div>
-      <div className="grid grid-cols-[54px_minmax(0,1fr)_46px] gap-2">
-        <div className="space-y-1.5">
-          <div className="h-4 rounded-[4px] bg-white/70" />
-          <div className="h-4 rounded-[4px] bg-white/50" />
-          <div className="h-4 rounded-[4px] bg-white/50" />
-          <div className="h-4 rounded-[4px] bg-white/40" />
-        </div>
-        <div className="space-y-1.5 rounded-[8px] bg-white/75 p-2">
-          <div className="space-y-1">
-            <div className="h-2 w-16 rounded-full bg-[#8b6cf0]/70" />
-            <div className="h-2 w-full rounded-full bg-[#241a55]/15" />
-          </div>
-          <div className="space-y-1 pt-1">
-            <div className="h-2 w-12 rounded-full bg-[#8b6cf0]/50" />
-            <div className="h-2 w-5/6 rounded-full bg-[#241a55]/15" />
-          </div>
-          <div className="space-y-1 pt-1">
-            <div className="h-2 w-20 rounded-full bg-[#4c3aa8]/50" />
-            <div className="h-2 w-2/3 rounded-full bg-[#241a55]/15" />
-          </div>
-        </div>
-        <div className="space-y-1.5">
-          <div className="h-6 rounded-[5px] bg-white/70" />
-          <div className="h-6 rounded-[5px] bg-white/50" />
-          <div className="h-6 rounded-[5px] bg-white/40" />
-        </div>
-      </div>
-    </div>
-  );
+interface Style {
+  name: string;
+  hint: string;
+  background: string;
+  ink: string;
 }
 
-function StudioPreview() {
-  return (
-    <div className="app-window p-3" aria-hidden="true">
-      <div className="flex items-center gap-2 px-1 pb-2.5">
-        <span className="size-4 rounded-[4px] bg-[#a3e635]/25" />
-        <span className="size-4 rounded-[4px] bg-white/10" />
-        <span className="size-4 rounded-[4px] bg-white/10" />
-        <span className="size-4 rounded-[4px] bg-white/10" />
-        <span className="ml-auto text-[10px] font-semibold text-white/55">Студия</span>
-      </div>
-      <div className="space-y-1.5">
-        <div className="flex items-center gap-2 rounded-[6px] bg-white/6 px-2 py-1.5">
-          <span className="size-2 rounded-[2px] bg-[#9146ff]" />
-          <span className="h-2 w-16 rounded-full bg-[#a3e635]/80" />
-          <span className="h-2 flex-1 rounded-full bg-white/20" />
-        </div>
-        <div className="flex items-center gap-2 rounded-[6px] bg-white/6 px-2 py-1.5">
-          <span className="size-2 rounded-[2px] bg-[#ff3355]" />
-          <span className="h-2 w-12 rounded-full bg-[#a3e635]/60" />
-          <span className="h-2 flex-1 rounded-full bg-white/20" />
-        </div>
-        <div className="flex items-center gap-2 rounded-[6px] bg-white/6 px-2 py-1.5">
-          <span className="size-2 rounded-[2px] bg-[#25f4ee]" />
-          <span className="h-2 w-20 rounded-full bg-[#a3e635]/70" />
-          <span className="h-2 flex-1 rounded-full bg-white/20" />
-        </div>
-        <div className="flex items-center gap-2 rounded-[6px] bg-white/6 px-2 py-1.5">
-          <span className="size-2 rounded-[2px] bg-[#f98a3d]" />
-          <span className="h-2 w-14 rounded-full bg-[#a3e635]/50" />
-          <span className="h-2 flex-1 rounded-full bg-white/20" />
-        </div>
-      </div>
-    </div>
-  );
-}
+const STYLES: Style[] = [
+  {
+    name: "Неон",
+    hint: "свечение и контур",
+    background: "radial-gradient(120% 120% at 20% 0%, #7b5cff 0%, #25124e 45%, #0a0714 100%)",
+    ink: "#eadfff",
+  },
+  {
+    name: "Терминал",
+    hint: "моно и зелёный",
+    background: "linear-gradient(160deg, #0a1f14, #030a07)",
+    ink: "#6ef2a3",
+  },
+  {
+    name: "Пиксель",
+    hint: "8-битная сетка",
+    background: "linear-gradient(160deg, #1d1435, #0a0714)",
+    ink: "#ffd166",
+  },
+  {
+    name: "Стекло",
+    hint: "размытие и свет",
+    background: "linear-gradient(160deg, #3a4166, #0d0f1c)",
+    ink: "#e9eeff",
+  },
+  {
+    name: "Ретровейв",
+    hint: "закат и сетка",
+    background: "linear-gradient(160deg, #ff4d9d, #7b5cff 55%, #4be0ff)",
+    ink: "#160b22",
+  },
+  {
+    name: "Rust",
+    hint: "для Rust и Tarkov",
+    background: "linear-gradient(160deg, #8a4114, #2a1408)",
+    ink: "#ffd6b0",
+  },
+  {
+    name: "Кибер",
+    hint: "жёсткие формы",
+    background: "linear-gradient(160deg, #0d3a47, #08121a)",
+    ink: "#4be0ff",
+  },
+];
 
-function Swatches({ colors }: { colors: string[] }) {
+const REST = [
+  "World of Tanks",
+  "Tarkov",
+  "Милая розовая",
+  "Комикс",
+  "Видеокассета",
+  "Вне закона",
+  "Вылазка",
+  "Звёздочёт",
+  "Охотник",
+  "Плашки",
+  "Приколото",
+  "Скетчбук",
+];
+
+function Swatch({ name, hint, background, ink }: Style) {
   return (
-    <div className="mt-4 flex max-w-[280px] gap-1.5" aria-hidden="true">
-      {colors.map((color) => (
-        <span key={color} className="swatch border border-ink/10" style={{ backgroundColor: color }} />
-      ))}
-    </div>
+    <figure className="w-[158px]">
+      <div className="flex h-[158px] items-end overflow-hidden rounded-[10px] p-3" style={{ background }}>
+        <span className="font-display text-[16px] font-semibold leading-tight" style={{ color: ink }}>
+          {name}
+        </span>
+      </div>
+      <figcaption className="mt-2 text-[12px] leading-snug text-faint">{hint}</figcaption>
+    </figure>
   );
 }
 
 export default function Styles() {
   return (
-    <section id="design" className="border-t border-line">
-      <div className="wrap py-16 sm:py-24">
-        <SectionHeading
-          title="Выглядит так, как вам нравится"
-          lead="Два вида окна и 25 стилей ленты, виджета OBS и оверлея. Один набор стилей действует сразу на всех трёх поверхностях."
-        />
-
-        <div className="mt-10 grid gap-10 md:grid-cols-2 md:gap-8">
-          <div>
-            <AirPreview />
-            <h3 className="mt-4 text-[21px]">Воздух</h3>
-            <p className="mt-1.5 text-[15px] leading-relaxed text-ink-soft">
-              Светлая лавандовая палитра. Разделы и каналы одной колонкой, лента карточкой и сводка эфира справа.
-            </p>
-            <Swatches colors={AIR_PALETTE} />
+    <Clause
+      id="styles"
+      number="02"
+      label="Оформление"
+      meta="25 наборов"
+      title="25 стилей на ленту, OBS и оверлей"
+      lead="Один набор стилей действует сразу на ленту, виджет OBS и оверлей — эфир выглядит цельно."
+    >
+      <div className="strip" role="list" aria-label="Примеры стилей">
+        {STYLES.map((style) => (
+          <div key={style.name} role="listitem">
+            <Swatch {...style} />
           </div>
-
-          <div>
-            <StudioPreview />
-            <h3 className="mt-4 text-[21px]">Студия</h3>
-            <p className="mt-1.5 text-[15px] leading-relaxed text-ink-soft">
-              Тёмная тема с лаймовым акцентом. Разделы иконками, плотная шапка и лента почти во всю ширину.
-            </p>
-            <Swatches colors={STUDIO_PALETTE} />
-          </div>
-        </div>
-
-        <div className="mt-12 rounded-[14px] bg-paper-2 p-5 sm:p-7">
-          <h3 className="text-[19px]">25 стилей — от игровых чатов до неона и терминала</h3>
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {STYLE_NAMES.map((style) => (
-              <li key={style} className="rounded-full border border-line bg-paper px-3 py-1 text-[13px] font-medium text-ink">
-                {style}
-              </li>
-            ))}
-            <li className="rounded-full border border-dashed border-ink/20 px-3 py-1 text-[13px] font-medium text-ink-faint">
-              и другие
-            </li>
-          </ul>
-          <p className="mt-5 max-w-[64ch] text-[15px] leading-relaxed text-ink-soft">
-            Режим «Только чат» одной кнопкой убирает всё, кроме ленты — удобно на вертикальном мониторе или компактном
-            втором экране. Свой шрифт добавляется ссылкой из Google Fonts.
-          </p>
-        </div>
+        ))}
       </div>
-    </section>
+
+      <p className="mt-6 max-w-[70ch] text-[14.6px] leading-relaxed text-muted">
+        <span className="text-faint">Ещё в наборе:</span>{" "}
+        {REST.map((name, index) => (
+          <span key={name}>
+            {name}
+            {index < REST.length - 1 ? ", " : ""}
+          </span>
+        ))}
+        {" "}и другие.
+      </p>
+
+      <p className="mt-4 max-w-[70ch] text-[14.6px] leading-relaxed text-muted">
+        Режим «Только чат» одной кнопкой убирает всё, кроме ленты — удобно на вертикальном мониторе или компактном втором
+        экране. Свой шрифт добавляется ссылкой из Google Fonts.
+      </p>
+    </Clause>
   );
 }

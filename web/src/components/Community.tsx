@@ -1,76 +1,89 @@
-import { Heart, PlayCircle, Radio, Send, Tv } from "lucide-react";
-import { LINKS, PLATFORMS } from "../lib/data";
-import SectionHeading from "./SectionHeading";
+import { LINKS } from "../lib/data";
+import Clause from "./Clause";
 
-const CHANNELS = [
-  { name: "Twitch", handle: PLATFORMS[0].handle, href: LINKS.twitch, icon: Radio, color: PLATFORMS[0].paper },
-  { name: "YouTube", handle: PLATFORMS[1].handle, href: LINKS.youtube, icon: PlayCircle, color: PLATFORMS[1].paper },
-  { name: "VK Видео Live", handle: PLATFORMS[2].handle, href: LINKS.vk, icon: Tv, color: PLATFORMS[2].paper },
+const ROWS = [
+  {
+    title: "Поддержать донатом",
+    text: "Любая сумма помогает проекту развиваться: новые площадки, функции и оформление.",
+    links: [{ label: "DonationAlerts", href: LINKS.donate }],
+  },
+  {
+    title: "Telegram-группа",
+    text: "Вопросы, идеи, сообщения об ошибках и новости об обновлениях — всё в одном месте.",
+    links: [{ label: "Присоединиться", href: LINKS.telegram }],
+  },
 ];
 
 export default function Community() {
   return (
-    <section id="community" className="border-t border-line">
-      <div className="wrap py-16 sm:py-24">
-        <SectionHeading
-          title="Сообщество"
-          lead="YawaChat — бесплатный проект. Подписка и донат помогают добавлять новые площадки, функции и оформление."
-        />
-
-        <div className="mt-10 grid gap-4 md:grid-cols-2">
-          <a
-            href={LINKS.donate}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex flex-col rounded-[14px] bg-paper-2 p-6 transition-colors duration-150 hover:bg-paper-2/70 sm:p-7"
+    <Clause
+      id="community"
+      number="05"
+      label="Сообщество"
+      title="Проект живёт на поддержку"
+      lead="YawaChat бесплатный и без подписок. Донат и подписка идут на новые площадки и оформление."
+    >
+      <div className="border-t border-white/10">
+        {ROWS.map((row) => (
+          <div
+            key={row.title}
+            className="grid gap-x-10 gap-y-2 border-b border-white/10 py-5 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]"
           >
-            <Heart className="size-5 text-amber" aria-hidden="true" />
-            <h3 className="mt-4 text-[21px]">Поддержать донатом</h3>
-            <p className="mt-1.5 max-w-[42ch] text-[15px] leading-relaxed text-ink-soft">
-              Любая сумма помогает проекту развиваться. Спасибо, что вы с нами.
-            </p>
-            <span className="mt-5 inline-flex min-h-10 w-fit items-center rounded-[9px] bg-ink px-4 text-[14px] font-semibold text-paper transition-colors duration-150 group-hover:bg-night-2">
-              Поддержать
-            </span>
-          </a>
+            <h3 className="font-sans text-[16.5px] font-semibold leading-snug">{row.title}</h3>
+            <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+              <p className="max-w-[46ch] text-[14.6px] leading-relaxed text-muted">{row.text}</p>
+              <span className="flex flex-wrap gap-x-5">
+                {row.links.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[14.5px] text-cyan underline decoration-cyan/35 underline-offset-[5px] transition-colors hover:decoration-cyan"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </span>
+            </div>
+          </div>
+        ))}
 
-          <a
-            href={LINKS.telegram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex flex-col rounded-[14px] bg-paper-2 p-6 transition-colors duration-150 hover:bg-paper-2/70 sm:p-7"
-          >
-            <Send className="size-5 text-brand-ink" aria-hidden="true" />
-            <h3 className="mt-4 text-[21px]">Телеграм-группа приложения</h3>
-            <p className="mt-1.5 max-w-[42ch] text-[15px] leading-relaxed text-ink-soft">
-              Вопросы, идеи, сообщения об ошибках и новости об обновлениях — всё в одном месте.
+        <div className="grid gap-x-10 gap-y-2 border-b border-white/10 py-5 sm:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
+          <h3 className="font-sans text-[16.5px] font-semibold leading-snug">Мои трансляции</h3>
+          <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
+            <p className="max-w-[46ch] text-[14.6px] leading-relaxed text-muted">
+              Как это работает вживую — на каналах, где я стримлю с YawaChat.
             </p>
-            <span className="mt-5 inline-flex min-h-10 w-fit items-center rounded-[9px] bg-ink px-4 text-[14px] font-semibold text-paper transition-colors duration-150 group-hover:bg-night-2">
-              Присоединиться
-            </span>
-          </a>
-        </div>
-
-        <h3 className="mt-14 font-sans text-[15px] font-semibold text-ink-faint">Мои трансляции</h3>
-        <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-          {CHANNELS.map((channel) => (
-            <li key={channel.name}>
+            <span className="flex flex-wrap gap-x-5 gap-y-1">
               <a
-                href={channel.href}
+                href={LINKS.twitch}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-[12px] border border-line px-4 py-3 transition-colors duration-150 hover:bg-paper-2"
+                className="text-[14.5px] text-muted underline decoration-white/25 underline-offset-[5px] transition-colors hover:text-text"
               >
-                <channel.icon className="size-5 shrink-0" style={{ color: channel.color }} aria-hidden="true" />
-                <span className="min-w-0">
-                  <span className="block text-[15px] font-semibold leading-tight">{channel.name}</span>
-                  <span className="block truncate text-[13px] text-ink-faint">{channel.handle}</span>
-                </span>
+                Twitch yawaside_
               </a>
-            </li>
-          ))}
-        </ul>
+              <a
+                href={LINKS.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[14.5px] text-muted underline decoration-white/25 underline-offset-[5px] transition-colors hover:text-text"
+              >
+                YouTube @YAWASIDE
+              </a>
+              <a
+                href={LINKS.vk}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[14.5px] text-muted underline decoration-white/25 underline-offset-[5px] transition-colors hover:text-text"
+              >
+                VK Видео Live yawaside
+              </a>
+            </span>
+          </div>
+        </div>
       </div>
-    </section>
+    </Clause>
   );
 }

@@ -39,15 +39,15 @@ export function DownloadButton({ variant = "primary", className = "" }: Props) {
 
   const styles =
     variant === "primary"
-      ? "min-h-14 gap-3 rounded-[10px] bg-brand px-6 text-[17px] text-white hover:bg-brand-ink sm:px-7"
-      : "min-h-11 gap-2 rounded-[9px] bg-brand px-4 text-sm text-white hover:bg-brand-ink";
+      ? "min-h-[54px] gap-2.5 rounded-full bg-violet px-7 text-[15.5px] hover:bg-[#6544e6]"
+      : "min-h-10 gap-2 rounded-full bg-violet px-4 text-[13.5px] hover:bg-[#6544e6]";
 
   return (
     <button
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className={`group inline-flex items-center justify-center font-semibold transition-[background-color,transform] duration-150 active:translate-y-px disabled:cursor-wait disabled:opacity-75 ${styles} ${className}`}
+      className={`inline-flex items-center justify-center font-semibold text-white transition-[background-color,transform] duration-150 active:translate-y-px disabled:cursor-wait disabled:opacity-75 ${styles} ${className}`}
     >
       <Icon className={variant === "primary" ? "size-[18px] shrink-0" : "size-4 shrink-0"} aria-hidden="true" />
       <span>{label}</span>
@@ -59,30 +59,18 @@ export function DownloadButton({ variant = "primary", className = "" }: Props) {
   );
 }
 
-interface MetaProps {
-  className?: string;
-}
-
-export function DownloadMeta({ className = "" }: MetaProps) {
+export function DownloadMeta({ className = "" }: { className?: string }) {
   const { latest, status } = useReleasesValue();
-  const version = latest ? `Версия ${latest.version}` : "";
-  const size = latest?.asset ? formatSize(latest.asset.size) : "";
 
   const line = (() => {
-    if (status === "loading") return "Заглядываем в список релизов…";
-    if (status === "error" || !latest) return "Windows 10 и 11, установка не нужна";
-    return [version, size, "Windows 10 и 11"].filter(Boolean).join(", ");
+    if (status === "loading") return "Смотрим список релизов…";
+    if (status === "error" || !latest) return "Windows 10 и 11, без установки";
+    return [`v${latest.version}`, latest.asset ? formatSize(latest.asset.size) : "", "Windows 10 и 11"]
+      .filter(Boolean)
+      .join(", ");
   })();
 
   return (
-    <p className={`text-sm text-ink-faint [font-variant-numeric:tabular-nums] ${className}`}>
-      {line}
-      {latest || status === "loading" ? (
-        <>
-          <br />
-          Бесплатно, без установки
-        </>
-      ) : null}
-    </p>
+    <p className={`text-[13.5px] text-faint [font-variant-numeric:tabular-nums] ${className}`}>{line}</p>
   );
 }

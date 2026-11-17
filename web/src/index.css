@@ -1,78 +1,74 @@
 @import "tailwindcss";
 
-/* Шрифты лежат рядом: кириллица и латиница отдельными файлами с unicode-range. */
+/* Unbounded — заголовки, Golos Text — текст. Оба с кириллицей, лежат рядом. */
 @font-face {
-  font-family: "Bitter";
+  font-family: "Unbounded";
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 200 900;
   font-display: swap;
-  src: url("./fonts/bitter-cyrillic-wght-normal.woff2") format("woff2");
+  src: url("./fonts/unbounded-cyrillic-wght-normal.woff2") format("woff2");
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 @font-face {
-  font-family: "Bitter";
+  font-family: "Unbounded";
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 200 900;
   font-display: swap;
-  src: url("./fonts/bitter-latin-wght-normal.woff2") format("woff2");
+  src: url("./fonts/unbounded-latin-wght-normal.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC,
     U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: "Onest";
+  font-family: "Golos Text";
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("./fonts/onest-cyrillic-wght-normal.woff2") format("woff2");
+  src: url("./fonts/golos-text-cyrillic-wght-normal.woff2") format("woff2");
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 @font-face {
-  font-family: "Onest";
+  font-family: "Golos Text";
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url("./fonts/onest-latin-wght-normal.woff2") format("woff2");
+  src: url("./fonts/golos-text-latin-wght-normal.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC,
     U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @theme {
-  --font-sans: "Onest", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
-  --font-display: "Bitter", Georgia, "Times New Roman", serif;
+  --font-sans: "Golos Text", ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --font-display: "Unbounded", "Golos Text", ui-sans-serif, sans-serif;
 
-  --color-paper: #f7f6fa;
-  --color-paper-2: #efedf5;
-  --color-ink: #14121c;
-  --color-ink-soft: #56506b;
-  --color-ink-faint: #6b6579;
-  --color-line: #dcd8e8;
-  --color-brand: #5a34f0;
-  --color-brand-ink: #4322b8;
-  --color-brand-soft: #ece6ff;
-  --color-night: #16121f;
-  --color-night-2: #211b31;
-  --color-night-line: #352d4a;
-  --color-live: #ff4d5e;
-  --color-amber: #8a5106;
+  --color-bg: #08060f;
+  --color-bg-2: #100b1e;
+  --color-text: #f4f1ff;
+  --color-muted: #a9a2c4;
+  --color-faint: #847da0;
+  --color-line: #241d3a;
+  --color-violet: #7253f5;
+  --color-cyan: #4be0ff;
+  --color-pink: #ff4d9d;
+  --color-amber: #ffb224;
 }
 
 @layer base {
   html {
-    color-scheme: light;
+    color-scheme: dark;
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    background-color: var(--color-bg);
   }
 
   body {
     margin: 0;
-    background-color: var(--color-paper);
-    color: var(--color-ink);
+    background-color: var(--color-bg);
+    color: var(--color-text);
     font-family: var(--font-sans);
     font-size: 17px;
     line-height: 1.6;
-    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
   }
 
   h1,
@@ -81,8 +77,8 @@
     margin: 0;
     font-family: var(--font-display);
     font-weight: 700;
-    line-height: 1.03;
-    letter-spacing: -0.018em;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
     text-wrap: balance;
   }
 
@@ -91,19 +87,19 @@
     text-wrap: pretty;
   }
 
-  :where(a, button, summary, [tabindex]):focus-visible {
-    outline: 2px solid var(--color-brand);
+  :where(a, button, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-cyan);
     outline-offset: 3px;
-    border-radius: 6px;
+    border-radius: 10px;
   }
 
   ::selection {
-    background-color: var(--color-brand);
+    background-color: var(--color-violet);
     color: #fff;
   }
 
   section[id] {
-    scroll-margin-top: 88px;
+    scroll-margin-top: 90px;
   }
 
   img {
@@ -129,7 +125,7 @@
   .wrap {
     margin-inline: auto;
     width: 100%;
-    max-width: 1180px;
+    max-width: 1240px;
     padding-inline: 1.25rem;
   }
 
@@ -139,90 +135,86 @@
     }
   }
 
-  /* Шахматка = прозрачный фон: так показываем, что оверлей не перекрывает игру. */
-  .checker {
-    background-color: #1b1626;
-    background-image:
-      linear-gradient(45deg, #241d33 25%, transparent 25%),
-      linear-gradient(-45deg, #241d33 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, #241d33 75%),
-      linear-gradient(-45deg, transparent 75%, #241d33 75%);
-    background-size: 18px 18px;
-    background-position:
-      0 0,
-      0 9px,
-      9px -9px,
-      -9px 0;
-  }
-
-  /* Раскрытие описания релиза без измерения высоты в JS. */
-  .accordion {
+  /* Пара «номер и подпись» слева, содержимое справа: страница читается как документ. */
+  .doc-grid {
     display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 240ms cubic-bezier(0.2, 0.7, 0.3, 1);
+    gap: 1.25rem;
   }
 
-  .accordion > div {
-    overflow: hidden;
-  }
+  @media (min-width: 1024px) {
+    .doc-grid {
+      grid-template-columns: 176px minmax(0, 1fr);
+      gap: 0;
+    }
 
-  .accordion[data-open="true"] {
-    grid-template-rows: 1fr;
-  }
-
-  .accordion[data-open="false"] > div {
-    visibility: hidden;
-  }
-
-  /* Окно приложения: единственный «объёмный» объект на бумажном фоне. */
-  .app-window {
-    background-color: var(--color-night);
-    color: #f3f0fb;
-    border-radius: 14px;
-    box-shadow:
-      0 1px 0 rgb(255 255 255 / 6%) inset,
-      0 40px 70px -40px rgb(20 18 28 / 70%);
-    overflow: hidden;
-  }
-
-  .app-window-light {
-    background-color: #f3eeff;
-    color: #241a55;
-    border-radius: 14px;
-    box-shadow: 0 1px 0 rgb(255 255 255 / 60%) inset;
-    overflow: hidden;
+    /* Линейка между полем примечаний и текстом — как в вёрстке документа. */
+    .doc-grid > .doc-body {
+      border-left: 1px solid rgb(255 255 255 / 10%);
+      padding-left: 2.5rem;
+    }
   }
 
   .feed-line {
-    animation: feed-in 420ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    border-top: 1px solid rgb(255 255 255 / 8%);
+    padding: 9px 0;
+    font-size: 13.2px;
+    line-height: 1.45;
   }
 
-  .swatch {
-    height: 34px;
-    flex: 1 1 0;
-    border-radius: 6px;
+  .strip {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    padding-bottom: 6px;
+  }
+  .strip::-webkit-scrollbar {
+    display: none;
+  }
+  .strip > * {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
   }
 }
 
-@keyframes feed-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
+@keyframes live-pulse {
+  0%,
+  100% {
     opacity: 1;
-    transform: none;
+  }
+  50% {
+    opacity: 0.3;
   }
 }
+.live-dot {
+  animation: live-pulse 2.6s ease-in-out infinite;
+}
 
-/* Плавное появление содержимого релиза — через View Transition API. */
+.accordion {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 240ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.accordion > div {
+  overflow: hidden;
+}
+.accordion[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.accordion[data-open="false"] > div {
+  visibility: hidden;
+}
+
 ::view-transition-old(.vt-soft) {
   animation: 140ms ease-in both vt-out;
 }
 ::view-transition-new(.vt-soft) {
   animation: 220ms ease-out both vt-in;
 }
-
 @keyframes vt-in {
   from {
     opacity: 0;
@@ -233,7 +225,6 @@
     transform: none;
   }
 }
-
 @keyframes vt-out {
   from {
     opacity: 1;

@@ -1,23 +1,22 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { DownloadButton } from "./DownloadButton";
 import logo from "../assets/logo.png?inline";
+import { DownloadButton } from "./DownloadButton";
 
 const NAV = [
   { href: "#features", label: "Возможности" },
-  { href: "#studio", label: "Эфир" },
-  { href: "#design", label: "Оформление" },
+  { href: "#styles", label: "Оформление" },
   { href: "#install", label: "Установка" },
-  { href: "#releases", label: "Релизы" },
+  { href: "#versions", label: "Релизы" },
   { href: "#community", label: "Сообщество" },
 ];
 
-export default function Header() {
+export default function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -38,29 +37,29 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 backdrop-blur-sm transition-[background-color,border-color] duration-200 ${
-        scrolled || open ? "border-b border-line bg-paper/90" : "border-b border-transparent bg-paper/70"
+      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-200 ${
+        scrolled || open ? "border-b border-white/10 bg-bg/85 backdrop-blur-xl" : "border-b border-transparent"
       }`}
     >
-      <div className="wrap flex h-16 items-center gap-6">
+      <div className="wrap flex h-[68px] items-center gap-6">
         <a href="#top" className="flex shrink-0 items-center gap-2.5" onClick={() => setOpen(false)}>
-          <img src={logo} alt="" width={30} height={30} className="size-[30px] rounded-[8px]" />
-          <span className="font-display text-[19px] font-bold tracking-tight">YawaChat</span>
+          <img src={logo} alt="" width={32} height={32} className="size-8 rounded-[9px]" />
+          <span className="font-display text-[17px] font-bold tracking-tight">YawaChat</span>
         </a>
 
-        <nav aria-label="Разделы страницы" className="ml-2 hidden items-center gap-6 lg:flex">
+        <nav aria-label="Разделы страницы" className="ml-3 hidden items-center gap-6 lg:flex">
           {NAV.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="text-[15px] font-medium text-ink-soft transition-colors duration-150 hover:text-ink"
+              className="text-[14.5px] font-medium text-muted transition-colors duration-150 hover:text-text"
             >
               {item.label}
             </a>
           ))}
         </nav>
 
-        <div className="ml-auto hidden lg:block">
+        <div className="ml-auto hidden sm:block">
           <DownloadButton variant="compact" />
         </div>
 
@@ -69,8 +68,8 @@ export default function Header() {
           onClick={() => setOpen((value) => !value)}
           aria-label={open ? "Закрыть меню" : "Открыть меню"}
           aria-expanded={open}
-          aria-controls="mobile-menu"
-          className="ml-auto grid size-11 place-items-center rounded-[9px] border border-line bg-paper text-ink transition-colors duration-150 hover:bg-paper-2 lg:hidden"
+          aria-controls="site-menu"
+          className="ml-auto grid size-11 place-items-center rounded-full border border-white/15 text-text transition-colors duration-150 hover:bg-white/10 sm:ml-0 lg:hidden"
         >
           {open ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
         </button>
@@ -78,8 +77,8 @@ export default function Header() {
 
       {open ? (
         <div
-          id="mobile-menu"
-          className="max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain border-t border-line bg-paper px-5 pb-8 pt-3 lg:hidden"
+          id="site-menu"
+          className="max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t border-line bg-bg px-5 pb-8 pt-2 lg:hidden"
         >
           <nav aria-label="Разделы страницы" className="flex flex-col">
             {NAV.map((item) => (
@@ -87,7 +86,7 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="border-b border-line py-3.5 text-[17px] font-medium text-ink"
+                className="border-b border-white/10 py-3.5 text-[17px] font-medium"
               >
                 {item.label}
               </a>
