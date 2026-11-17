@@ -9,25 +9,22 @@ export const LINKS = {
 export interface Platform {
   id: string;
   name: string;
-  /** Двухбуквенный знак для тёмного окна приложения. */
+  /** Двухбуквенный знак для плашек. */
   short: string;
-  /** Цвет площадки — только для тёмных поверхностей. */
   color: string;
-  /** Затемнённый вариант того же цвета — для светлого фона. */
-  paper: string;
-  /** Тёмный текст на плашке площадки (для светлых фирменных цветов). */
+  /** Тёмный текст на светлых фирменных цветах. */
   darkBadge?: boolean;
   handle?: string;
 }
 
 export const PLATFORMS: Platform[] = [
-  { id: "twitch", name: "Twitch", short: "Tw", color: "#9146ff", paper: "#6b3fd4", handle: "yawaside_" },
-  { id: "youtube", name: "YouTube Live", short: "YT", color: "#ff3355", paper: "#cc1f3d", handle: "@YAWASIDE", darkBadge: true },
-  { id: "vk", name: "VK Видео Live", short: "VK", color: "#2d8cff", paper: "#1367d8", handle: "yawaside", darkBadge: true },
-  { id: "kick", name: "Kick", short: "Ki", color: "#53fc18", paper: "#2b8b12", darkBadge: true },
-  { id: "tiktok", name: "TikTok Live", short: "Tt", color: "#25f4ee", paper: "#00918f", darkBadge: true },
-  { id: "rutube", name: "Rutube", short: "Ru", color: "#e5e7eb", paper: "#544e63", darkBadge: true },
-  { id: "boosty", name: "Boosty", short: "Bo", color: "#f98a3d", paper: "#bf5f14", darkBadge: true },
+  { id: "twitch", name: "Twitch", short: "Tw", color: "#9146ff", handle: "yawaside_" },
+  { id: "youtube", name: "YouTube Live", short: "YT", color: "#ff3355", handle: "@YAWASIDE", darkBadge: true },
+  { id: "vk", name: "VK Видео Live", short: "VK", color: "#2d8cff", handle: "yawaside", darkBadge: true },
+  { id: "kick", name: "Kick", short: "Ki", color: "#53fc18", darkBadge: true },
+  { id: "tiktok", name: "TikTok Live", short: "Tt", color: "#25f4ee", darkBadge: true },
+  { id: "rutube", name: "Rutube", short: "Ru", color: "#e5e7eb", darkBadge: true },
+  { id: "boosty", name: "Boosty", short: "Bo", color: "#f98a3d", darkBadge: true },
 ];
 
 export const DONATION_SERVICES = ["DonationAlerts", "DonatePay"] as const;
@@ -53,17 +50,19 @@ export interface Feature {
   text: string;
 }
 
-export interface FeatureGroup {
+export interface FeatureTab {
   id: string;
+  label: string;
   title: string;
   features: Feature[];
 }
 
-/** Десять возможностей в основном списке; ещё три — в тёмном блоке «Эфир». */
-export const FEATURE_GROUPS: FeatureGroup[] = [
+/** Тринадцать возможностей в пяти вкладках. */
+export const FEATURE_TABS: FeatureTab[] = [
   {
     id: "feed",
-    title: "Лента",
+    label: "Лента",
+    title: "Все площадки идут одним потоком",
     features: [
       {
         icon: "layers",
@@ -79,7 +78,8 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
   },
   {
     id: "money",
-    title: "Донаты и баллы",
+    label: "Донаты",
+    title: "Деньги видны сразу и слышны вовремя",
     features: [
       {
         icon: "coins",
@@ -105,18 +105,42 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
   },
   {
     id: "voice",
-    title: "Голос",
+    label: "Голос",
+    title: "Чат читается вслух, пока вы в игре",
     features: [
       {
         icon: "mic",
         title: "Озвучка сообщений",
         text: "Нейросетевые голоса Edge TTS и системные голоса Windows. Скорость, громкость, состав фразы, голос для конкретного зрителя, фильтры ссылок и команд, чёрный и белый списки авторов.",
       },
+      {
+        icon: "keyboard",
+        title: "Горячие клавиши",
+        text: "Озвучка, пауза и пропуск очереди, режим «Только чат», показ оверлея — работают, даже когда вы в игре.",
+      },
     ],
   },
   {
-    id: "care",
-    title: "Модерация и помощь",
+    id: "air",
+    label: "Эфир",
+    title: "То, что видит зритель",
+    features: [
+      {
+        icon: "gamepad",
+        title: "Игровой оверлей",
+        text: "Полупрозрачное окно поверх игры с последними сообщениями и событиями. Не перехватывает мышь, свободно перемещается и меняет размер, показывает статистику эфира. Для TikTok — счётчики зрителей и лайков.",
+      },
+      {
+        icon: "obs",
+        title: "Виджет для OBS",
+        text: "Отдельный источник для трансляции с собственным оформлением — чат на экране зрителей выглядит так, как вы настроите.",
+      },
+    ],
+  },
+  {
+    id: "moderation",
+    label: "Модерация",
+    title: "Порядок в чате без лишних окон",
     features: [
       {
         icon: "shield",
@@ -134,25 +158,6 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
         text: "Диагностический пакет со сведениями о сбоях и состоянии площадок. Имена каналов, сообщения и данные входа в архив не попадают.",
       },
     ],
-  },
-];
-
-/** Три возможности, которые показывает тёмный блок «Эфир». */
-export const AIR_FEATURES: Feature[] = [
-  {
-    icon: "gamepad",
-    title: "Игровой оверлей",
-    text: "Полупрозрачное окно поверх игры с последними сообщениями и событиями. Не перехватывает мышь, свободно перемещается и меняет размер, показывает статистику эфира. Для TikTok — счётчики зрителей и лайков.",
-  },
-  {
-    icon: "obs",
-    title: "Виджет для OBS",
-    text: "Отдельный источник для трансляции с собственным оформлением — чат на экране зрителей выглядит так, как вы настроите.",
-  },
-  {
-    icon: "keyboard",
-    title: "Горячие клавиши",
-    text: "Озвучка, пауза и пропуск очереди, режим «Только чат», показ оверлея — работают, даже когда вы в игре.",
   },
 ];
 
@@ -197,9 +202,37 @@ export const DEMO_MESSAGES: DemoMessage[] = [
   { platform: 2, user: "ВанёкGames", color: "#93c5fd", text: "Вижу чат из ВК, всё работает", time: "21:05" },
   { platform: 3, user: "kickfan_77", color: "#bef264", text: "Kick в деле, лента единая", time: "21:05" },
   { platform: 4, user: "tiktok_sasha", color: "#67e8f9", text: "Лайки летят 💜", time: "21:05" },
-  { platform: 6, user: "Аноним", color: "#fdba74", text: "На новый микрофон!", time: "21:06", donate: { amount: "300 ₽", service: "DonationAlerts" } },
+  {
+    platform: 6,
+    user: "Аноним",
+    color: "#fdba74",
+    text: "На новый микрофон!",
+    time: "21:06",
+    donate: { amount: "300 ₽", service: "DonationAlerts" },
+  },
   { platform: 0, user: "moder_dasha", color: "#86efac", text: "Не забываем про правила чата", time: "21:06", mod: true },
   { platform: 5, user: "rutube_lover", color: "#e5e7eb", text: "Рутуб тоже здесь, красота", time: "21:07" },
-  { platform: 0, user: "nightowl_k", color: "#c4b5fd", text: "оформил подписку на 3 месяца", time: "21:07", event: "Подписка" },
+  {
+    platform: 0,
+    user: "nightowl_k",
+    color: "#c4b5fd",
+    text: "оформил подписку на 3 месяца",
+    time: "21:07",
+    event: "Подписка",
+  },
   { platform: 1, user: "StreamFan", color: "#f9a8d4", text: "Смайлы 7TV анимированные 😍", time: "21:08" },
+];
+
+/** Экраны в горизонтальной витрине героя. */
+export interface Slide {
+  id: string;
+  title: string;
+  note: string;
+}
+
+export const SLIDES: Slide[] = [
+  { id: "feed", title: "Единая лента", note: "Семь площадок, один поток сообщений, донатов и событий." },
+  { id: "money", title: "Донаты", note: "DonationAlerts и DonatePay в одном формате, со своим звуком для каждой площадки." },
+  { id: "overlay", title: "Игровой оверлей", note: "Прозрачное окно поверх игры: мышь проходит насквозь." },
+  { id: "obs", title: "Виджет OBS", note: "Отдельный источник для трансляции со своим оформлением." },
 ];
