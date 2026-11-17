@@ -1,0 +1,14 @@
+# зависимости
+node_modules/
+web/node_modules/
+
+# результат сборки (копируется в корень как index.html)
+web/dist/
+dist/
+
+# служебное
+.DS_Store
+*.log
+.vite/
+.env
+.env.*
