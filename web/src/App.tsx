@@ -1,9 +1,9 @@
 import { ReleasesProvider } from "./lib/ReleasesContext";
 import SiteHeader from "./components/SiteHeader";
-import Hero from "./components/Hero";
+import Cover from "./components/Cover";
 import Platforms from "./components/Platforms";
 import Features from "./components/Features";
-import Live from "./components/Live";
+import Plate from "./components/Plate";
 import Styles from "./components/Styles";
 import Install from "./components/Install";
 import Versions from "./components/Versions";
@@ -15,7 +15,7 @@ export default function App() {
     <ReleasesProvider>
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-violet focus:px-4 focus:py-2.5 focus:text-[14px] focus:font-semibold focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-violet focus:px-4 focus:py-2.5 focus:text-[14px] focus:font-semibold focus:text-white"
       >
         Перейти к содержимому
       </a>
@@ -23,10 +23,10 @@ export default function App() {
       <SiteHeader />
 
       <main id="main">
-        <Hero />
+        <Cover />
         <Platforms />
         <Features />
-        <Live />
+        <Plate />
         <Styles />
         <Install />
         <Versions />

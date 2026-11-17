@@ -2,7 +2,7 @@ import logo from "../assets/logo.png?inline";
 
 export default function Footer() {
   return (
-    <footer className="mt-20 border-t border-line/70 sm:mt-28">
+    <footer className="mt-20 border-t border-white/10 sm:mt-28">
       <div className="wrap flex flex-col gap-5 py-9 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <img src={logo} alt="" width={34} height={34} className="size-[34px] rounded-[9px]" />

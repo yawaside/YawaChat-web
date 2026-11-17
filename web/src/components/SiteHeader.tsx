@@ -4,9 +4,9 @@ import logo from "../assets/logo.png?inline";
 import { DownloadButton } from "./DownloadButton";
 
 const NAV = [
-  { href: "#platforms", label: "Площадки" },
   { href: "#features", label: "Возможности" },
   { href: "#styles", label: "Оформление" },
+  { href: "#install", label: "Установка" },
   { href: "#versions", label: "Релизы" },
   { href: "#community", label: "Сообщество" },
 ];
@@ -38,7 +38,7 @@ export default function SiteHeader() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-200 ${
-        scrolled || open ? "border-b border-line/70 bg-bg/85 backdrop-blur-xl" : "border-b border-transparent"
+        scrolled || open ? "border-b border-white/10 bg-bg/85 backdrop-blur-xl" : "border-b border-transparent"
       }`}
     >
       <div className="wrap flex h-[68px] items-center gap-6">
@@ -86,7 +86,7 @@ export default function SiteHeader() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="border-b border-line py-3.5 text-[17px] font-medium"
+                className="border-b border-white/10 py-3.5 text-[17px] font-medium"
               >
                 {item.label}
               </a>

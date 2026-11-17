@@ -125,7 +125,7 @@
   .wrap {
     margin-inline: auto;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1240px;
     padding-inline: 1.25rem;
   }
 
@@ -135,56 +135,42 @@
     }
   }
 
-  /* Карточка поверх фотографии: живая лента, а не «окно приложения». */
-  .glass {
-    background: linear-gradient(180deg, rgb(18 12 32 / 82%), rgb(10 7 20 / 92%));
-    border: 1px solid rgb(255 255 255 / 12%);
-    border-radius: 20px;
-    backdrop-filter: blur(14px);
-    box-shadow: 0 40px 80px -40px rgb(0 0 0 / 90%);
+  /* Пара «номер и подпись» слева, содержимое справа: страница читается как документ. */
+  .doc-grid {
+    display: grid;
+    gap: 1.25rem;
   }
 
-  .tile {
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgb(255 255 255 / 8%);
-    border-radius: 20px;
-    background: linear-gradient(160deg, rgb(255 255 255 / 5%), rgb(255 255 255 / 2%));
-    padding: 22px;
-  }
+  @media (min-width: 1024px) {
+    .doc-grid {
+      grid-template-columns: 176px minmax(0, 1fr);
+      gap: 0;
+    }
 
-  .tile-title {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 17px;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-  }
-
-  .tile-text {
-    margin-top: 8px;
-    font-size: 14.5px;
-    line-height: 1.55;
-    color: var(--color-muted);
+    /* Линейка между полем примечаний и текстом — как в вёрстке документа. */
+    .doc-grid > .doc-body {
+      border-left: 1px solid rgb(255 255 255 / 10%);
+      padding-left: 2.5rem;
+    }
   }
 
   .feed-line {
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    border-radius: 10px;
-    padding: 8px 10px;
-    font-size: 13.5px;
-    line-height: 1.35;
+    border-top: 1px solid rgb(255 255 255 / 8%);
+    padding: 9px 0;
+    font-size: 13.2px;
+    line-height: 1.45;
   }
 
   .strip {
     display: flex;
-    gap: 12px;
+    gap: 14px;
     overflow-x: auto;
     scroll-snap-type: x proximity;
     scrollbar-width: none;
-    padding-bottom: 4px;
+    padding-bottom: 6px;
   }
   .strip::-webkit-scrollbar {
     display: none;
