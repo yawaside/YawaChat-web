@@ -1,0 +1,36 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Установка зависимостей
+        working-directory: web
+        run: npm ci
+
+      - name: Сборка сайта
+        working-directory: web
+        run: npm run build
+
+      - name: Проверка, что index.html в корне соответствует исходникам
+        run: |
+          if ! git diff --quiet -- index.html; then
+            echo "::error::index.html в корне устарел. Выполните 'cd web && npm run build' и закоммитьте обновлённый index.html."
+            git --no-pager diff --stat -- index.html
+            exit 1
+          fi
+          echo "index.html актуален."
