@@ -1,111 +1,244 @@
 @import "tailwindcss";
 
+/* Шрифты лежат рядом: кириллица и латиница отдельными файлами с unicode-range. */
+@font-face {
+  font-family: "Bitter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/bitter-cyrillic-wght-normal.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Bitter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/bitter-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/onest-cyrillic-wght-normal.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("./fonts/onest-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 @theme {
-  --font-sans: "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-display: "Unbounded", "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --color-ink: #0b0820;
-  --color-ink-2: #120d30;
-  --color-card: #171139;
-  --color-violet: #8b5cf6;
-  --color-cyan: #38d6ff;
-  --color-pink: #e879f9;
+  --font-sans: "Onest", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Bitter", Georgia, "Times New Roman", serif;
+
+  --color-paper: #f7f6fa;
+  --color-paper-2: #efedf5;
+  --color-ink: #14121c;
+  --color-ink-soft: #56506b;
+  --color-ink-faint: #6b6579;
+  --color-line: #dcd8e8;
+  --color-brand: #5a34f0;
+  --color-brand-ink: #4322b8;
+  --color-brand-soft: #ece6ff;
+  --color-night: #16121f;
+  --color-night-2: #211b31;
+  --color-night-line: #352d4a;
+  --color-live: #ff4d5e;
+  --color-amber: #8a5106;
 }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  margin: 0;
-  background: var(--color-ink);
-  color: #e9e6ff;
-  font-family: var(--font-sans);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-section[id] {
-  scroll-margin-top: 80px;
-}
-
-.grad-text {
-  background: linear-gradient(95deg, #38d6ff 0%, #8b5cf6 55%, #e879f9 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.grad-btn {
-  background: linear-gradient(95deg, #38d6ff 0%, #8b5cf6 55%, #e879f9 100%);
-}
-
-.glass {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.025));
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  backdrop-filter: blur(10px);
-}
-
-.bg-grid {
-  background-image:
-    linear-gradient(rgba(139, 92, 246, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(139, 92, 246, 0.07) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 30%, transparent 75%);
-}
-
-@keyframes floaty {
-  0%,
-  100% {
-    transform: translateY(0);
+@layer base {
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
-  50% {
-    transform: translateY(-12px);
+
+  body {
+    margin: 0;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.03;
+    letter-spacing: -0.018em;
+    text-wrap: balance;
+  }
+
+  p {
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  :where(a, button, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background-color: var(--color-brand);
+    color: #fff;
+  }
+
+  section[id] {
+    scroll-margin-top: 88px;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
-.floaty {
-  animation: floaty 6s ease-in-out infinite;
+
+@layer components {
+  .wrap {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 1180px;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .wrap {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* Шахматка = прозрачный фон: так показываем, что оверлей не перекрывает игру. */
+  .checker {
+    background-color: #1b1626;
+    background-image:
+      linear-gradient(45deg, #241d33 25%, transparent 25%),
+      linear-gradient(-45deg, #241d33 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #241d33 75%),
+      linear-gradient(-45deg, transparent 75%, #241d33 75%);
+    background-size: 18px 18px;
+    background-position:
+      0 0,
+      0 9px,
+      9px -9px,
+      -9px 0;
+  }
+
+  /* Раскрытие описания релиза без измерения высоты в JS. */
+  .accordion {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 240ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+
+  .accordion > div {
+    overflow: hidden;
+  }
+
+  .accordion[data-open="true"] {
+    grid-template-rows: 1fr;
+  }
+
+  .accordion[data-open="false"] > div {
+    visibility: hidden;
+  }
+
+  /* Окно приложения: единственный «объёмный» объект на бумажном фоне. */
+  .app-window {
+    background-color: var(--color-night);
+    color: #f3f0fb;
+    border-radius: 14px;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 6%) inset,
+      0 40px 70px -40px rgb(20 18 28 / 70%);
+    overflow: hidden;
+  }
+
+  .app-window-light {
+    background-color: #f3eeff;
+    color: #241a55;
+    border-radius: 14px;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 60%) inset;
+    overflow: hidden;
+  }
+
+  .feed-line {
+    animation: feed-in 420ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+
+  .swatch {
+    height: 34px;
+    flex: 1 1 0;
+    border-radius: 6px;
+  }
 }
 
-@keyframes msg-in {
+@keyframes feed-in {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.98);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
     transform: none;
   }
 }
-.msg-in {
-  animation: msg-in 0.45s ease-out both;
+
+/* Плавное появление содержимого релиза — через View Transition API. */
+::view-transition-old(.vt-soft) {
+  animation: 140ms ease-in both vt-out;
+}
+::view-transition-new(.vt-soft) {
+  animation: 220ms ease-out both vt-in;
 }
 
-@keyframes marquee {
+@keyframes vt-in {
   from {
-    transform: translateX(0);
+    opacity: 0;
+    transform: translateY(-4px);
   }
   to {
-    transform: translateX(-50%);
-  }
-}
-.marquee {
-  animation: marquee 32s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .floaty,
-  .marquee,
-  .msg-in {
-    animation: none;
-  }
-  html {
-    scroll-behavior: auto;
+    opacity: 1;
+    transform: none;
   }
 }
 
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
+@keyframes vt-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
