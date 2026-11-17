@@ -1,202 +1,236 @@
-import { useState } from "react";
-import { ChevronDown, Download, RefreshCw, Package } from "lucide-react";
-import { SectionTitle } from "./Features";
-import DownloadButton from "./DownloadButton";
-import { useRel } from "../lib/ReleasesContext";
-import { formatDate, formatSize, type Release } from "../lib/releases";
+import { startTransition, useId, useState, ViewTransition } from "react";
+import { ChevronDown, Download, Package, RefreshCw } from "lucide-react";
 import { LINKS } from "../lib/data";
+import { useReleasesValue } from "../lib/ReleasesContext";
+import { formatCount, formatDate, formatSize, type Release } from "../lib/releases";
+import { DownloadButton, DownloadMeta } from "./DownloadButton";
+import SectionHeading from "./SectionHeading";
 
-function inline(text: string, key: number) {
-  const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).filter(Boolean);
+const INLINE_PATTERN = /(\*\*[^*]+\*\*|`[^`]+`)/g;
+
+function Inline({ text }: { text: string }) {
+  const parts = text.split(INLINE_PATTERN).filter(Boolean);
   return (
-    <span key={key}>
-      {parts.map((p, i) =>
-        p.startsWith("**") ? (
-          <b key={i} className="text-white">
-            {p.slice(2, -2)}
-          </b>
-        ) : p.startsWith("`") ? (
-          <code key={i} className="rounded bg-white/10 px-1 text-[0.9em]">
-            {p.slice(1, -1)}
+    <>
+      {parts.map((part, index) =>
+        part.startsWith("**") ? (
+          <strong key={index} className="font-semibold text-ink">
+            {part.slice(2, -2)}
+          </strong>
+        ) : part.startsWith("`") ? (
+          <code key={index} className="rounded-[4px] bg-paper-2 px-1 text-[0.92em]">
+            {part.slice(1, -1)}
           </code>
         ) : (
-          p
+          <span key={index}>{part}</span>
         ),
       )}
-    </span>
+    </>
   );
 }
 
-function Notes({ text }: { text: string }) {
-  const lines = text.replace(/\r/g, "").split("\n");
-  const out: React.ReactNode[] = [];
+function ReleaseNotes({ text }: { text: string }) {
+  if (!text.trim()) return <p className="text-[15px] text-ink-faint">Описание не добавлено.</p>;
+
+  const blocks: React.ReactNode[] = [];
   let list: string[] = [];
-  const flush = () => {
-    if (list.length) {
-      const items = list;
-      out.push(
-        <ul key={`ul${out.length}`} className="my-2 list-disc space-y-1.5 pl-5">
-          {items.map((l, i) => (
-            <li key={i}>{inline(l, i)}</li>
-          ))}
-        </ul>,
-      );
-      list = [];
-    }
+
+  const flushList = () => {
+    if (!list.length) return;
+    const items = list;
+    blocks.push(
+      <ul key={`list-${blocks.length}`} className="my-2 list-disc space-y-1 pl-5">
+        {items.map((item, index) => (
+          <li key={index}>
+            <Inline text={item} />
+          </li>
+        ))}
+      </ul>,
+    );
+    list = [];
   };
-  lines.forEach((raw, i) => {
-    const l = raw.trim();
-    if (/^[-*]\s+/.test(l)) return list.push(l.replace(/^[-*]\s+/, ""));
-    flush();
-    if (!l) return;
-    if (/^#{1,6}\s+/.test(l))
-      out.push(
-        <h4 key={i} className="mt-4 text-sm font-bold uppercase tracking-wide text-cyan-300/80">
-          {l.replace(/^#{1,6}\s+/, "")}
-        </h4>,
+
+  text
+    .replace(/\r/g, "")
+    .split("\n")
+    .forEach((raw, index) => {
+      const line = raw.trim();
+      if (/^[-*]\s+/.test(line)) {
+        list.push(line.replace(/^[-*]\s+/, ""));
+        return;
+      }
+      flushList();
+      if (!line) return;
+      if (/^#{1,6}\s+/.test(line)) {
+        blocks.push(
+          <h4 key={`h-${index}`} className="mt-4 font-sans text-[13px] font-semibold text-ink-faint">
+            {line.replace(/^#{1,6}\s+/, "")}
+          </h4>,
+        );
+        return;
+      }
+      blocks.push(
+        <p key={`p-${index}`} className="mt-1.5">
+          <Inline text={line} />
+        </p>,
       );
-    else out.push(<p key={i}>{inline(l, i)}</p>);
-  });
-  flush();
-  return <div className="space-y-1 text-[15px] leading-relaxed text-violet-100/70">{out}</div>;
+    });
+  flushList();
+
+  return <div className="text-[15px] leading-relaxed text-ink-soft">{blocks}</div>;
 }
 
-function Row({ r, isLatest, defaultOpen }: { r: Release; isLatest: boolean; defaultOpen: boolean }) {
-  const [open, setOpen] = useState(defaultOpen);
-  const { download } = useRel();
+function ReleaseRow({ release, isLatest }: { release: Release; isLatest: boolean }) {
+  const { download } = useReleasesValue();
+  const [open, setOpen] = useState(isLatest);
+  const panelId = useId();
+
+  const details = [
+    release.asset ? formatSize(release.asset.size) : "",
+    release.asset ? `${formatCount(release.asset.downloads)} скачиваний` : "",
+  ].filter(Boolean);
+
   return (
-    <li className="glass overflow-hidden rounded-2xl">
-      <div className="flex flex-wrap items-center gap-3 p-4 sm:p-5">
+    <li className="py-5">
+      <div className="flex flex-wrap items-start gap-x-4 gap-y-3">
         <button
           type="button"
-          onClick={() => setOpen((v) => !v)}
+          onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
-          className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left"
+          aria-controls={panelId}
+          className="flex min-w-0 flex-1 items-start gap-3 text-left"
         >
-          <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-violet-500/20 text-violet-300">
-            <Package className="size-5" />
-          </span>
           <span className="min-w-0">
             <span className="flex flex-wrap items-center gap-2">
-              <span className="font-display text-base font-bold sm:text-lg">v{r.version}</span>
-              {isLatest && (
-                <span className="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[11px] font-bold text-emerald-300">
-                  Последняя
-                </span>
-              )}
-              {r.prerelease && (
-                <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-[11px] font-bold text-amber-300">
-                  Предварительная
-                </span>
-              )}
+              <span className="font-display text-[20px] font-bold leading-none">v{release.version}</span>
+              {isLatest ? (
+                <span className="rounded-full bg-brand-soft px-2 py-0.5 text-[11px] font-semibold text-brand-ink">последняя</span>
+              ) : null}
+              {release.prerelease ? (
+                <span className="rounded-full bg-amber/10 px-2 py-0.5 text-[11px] font-semibold text-amber">предварительная</span>
+              ) : null}
             </span>
-            <span className="block text-xs text-white/50 sm:text-sm">{formatDate(r.date)}</span>
+            <span className="mt-1.5 block text-[13px] text-ink-faint [font-variant-numeric:tabular-nums]">
+              <time dateTime={release.date}>{formatDate(release.date)}</time>
+              {details.length ? `, ${details.join(", ")}` : ""}
+            </span>
           </span>
-          <ChevronDown className={`ml-auto size-5 shrink-0 text-white/40 transition ${open ? "rotate-180" : ""}`} />
+          <ChevronDown
+            className={`ml-auto size-4 shrink-0 text-ink-faint transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+            aria-hidden="true"
+          />
         </button>
 
-        {r.asset && (
+        {release.asset ? (
           <button
             type="button"
-            onClick={() => download(r)}
-            className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-violet-300/30 bg-violet-500/15 px-4 text-sm font-bold text-violet-100 transition hover:bg-violet-500/30 sm:w-auto"
+            onClick={() => download(release)}
+            className="inline-flex min-h-10 items-center gap-2 rounded-[9px] border border-line bg-paper px-3.5 text-[14px] font-semibold text-ink transition-colors duration-150 hover:border-ink/25 hover:bg-paper-2"
           >
-            <Download className="size-4" />
-            Скачать{r.asset.size ? ` · ${formatSize(r.asset.size)}` : ""}
+            <Download className="size-4" aria-hidden="true" />
+            Скачать
           </button>
-        )}
+        ) : null}
       </div>
-      {open && (
-        <div className="border-t border-white/10 px-4 py-4 sm:px-5">
-          {r.notes.trim() ? <Notes text={r.notes} /> : <p className="text-sm text-white/50">Описание не добавлено.</p>}
+
+      <div className="accordion mt-3" data-open={open}>
+        <div>
+          <div id={panelId} className="pb-1">
+            <ReleaseNotes text={release.notes} />
+          </div>
         </div>
-      )}
+      </div>
     </li>
   );
 }
 
 export default function Releases() {
-  const { releases, latest, status, reload } = useRel();
-  const [all, setAll] = useState(false);
-  const shown = all ? releases : releases.slice(0, 5);
+  const { releases, latest, status, reload } = useReleasesValue();
+  const [showAll, setShowAll] = useState(false);
+  const shown = showAll ? releases : releases.slice(0, 5);
 
   return (
-    <section id="releases" className="border-t border-white/10 bg-[#0e0a27]">
-      <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 sm:py-24">
-        <SectionTitle
-          kicker="Релизы"
-          title={
-            <>
-              Все версии <span className="grad-text">YawaChat</span>
-            </>
-          }
-          text="Всегда можно скачать последнюю версию или любую из предыдущих."
-        />
+    <section id="releases" className="border-t border-line">
+      <div className="wrap py-16 sm:py-24">
+        <div className="max-w-[820px]">
+          <SectionHeading
+            title="Релизы"
+            lead="Скачайте последнюю версию или любую из предыдущих. Все сборки собраны в одном месте."
+          />
 
-        <div className="mb-8 flex justify-center">
-          <DownloadButton showMeta className="items-center" />
-        </div>
-
-        {status === "loading" && (
-          <div className="space-y-3">
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="glass h-[76px] animate-pulse rounded-2xl" />
-            ))}
+          <div className="mt-8">
+            <DownloadButton variant="primary" />
+            <DownloadMeta className="mt-3.5" />
           </div>
-        )}
 
-        {status === "error" && (
-          <div className="glass rounded-2xl p-6 text-center">
-            <p className="text-violet-100/70">Не удалось загрузить список версий.</p>
-            <button
-              type="button"
-              onClick={reload}
-              className="mt-4 inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 text-sm font-bold hover:bg-white/10"
-            >
-              <RefreshCw className="size-4" /> Повторить
-            </button>
-          </div>
-        )}
-
-        {status === "empty" && (
-          <div className="glass rounded-2xl p-8 text-center">
-            <Package className="mx-auto mb-3 size-8 text-violet-300" />
-            <h3 className="text-lg font-bold">Релизы скоро появятся</h3>
-            <p className="mt-2 text-violet-100/65">
-              Как только выйдет первая версия, она появится здесь, а кнопка «Скачать» начнёт загрузку автоматически.
-              Новости — в Telegram-группе.
-            </p>
-            <a
-              href={LINKS.telegram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 inline-flex min-h-11 items-center rounded-xl bg-sky-500/20 px-5 text-sm font-bold text-sky-200 hover:bg-sky-500/30"
-            >
-              Открыть Telegram
-            </a>
-          </div>
-        )}
-
-        {status === "ready" && (
-          <>
-            <ul className="space-y-3">
-              {shown.map((r, i) => (
-                <Row key={r.id} r={r} isLatest={latest?.id === r.id} defaultOpen={i === 0} />
+          {status === "loading" ? (
+            <div className="mt-10 space-y-3" aria-hidden="true">
+              {[0, 1, 2].map((row) => (
+                <div key={row} className="h-16 animate-pulse rounded-[10px] bg-paper-2" />
               ))}
-            </ul>
-            {releases.length > 5 && (
-              <div className="mt-5 text-center">
-                <button
-                  type="button"
-                  onClick={() => setAll((v) => !v)}
-                  className="min-h-11 cursor-pointer rounded-xl border border-white/15 bg-white/5 px-5 text-sm font-bold hover:bg-white/10"
-                >
-                  {all ? "Свернуть" : `Показать все (${releases.length})`}
-                </button>
-              </div>
-            )}
-          </>
-        )}
+            </div>
+          ) : null}
+
+          {status === "error" ? (
+            <div className="mt-10 rounded-[14px] bg-paper-2 p-6">
+              <p className="text-[15px] text-ink-soft">
+                Не удалось загрузить список версий — возможно, GitHub временно недоступен. Кнопка «Скачать» всё равно
+                откроет страницу последнего релиза.
+              </p>
+              <button
+                type="button"
+                onClick={() => void reload()}
+                className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-[9px] border border-line bg-paper px-4 text-[14px] font-semibold text-ink transition-colors duration-150 hover:bg-paper-2"
+              >
+                <RefreshCw className="size-4" aria-hidden="true" />
+                Попробовать снова
+              </button>
+            </div>
+          ) : null}
+
+          {status === "empty" ? (
+            <div className="mt-10 rounded-[14px] bg-paper-2 p-6">
+              <Package className="size-6 text-ink-faint" aria-hidden="true" />
+              <h3 className="mt-3 text-[19px]">Релизы скоро появятся</h3>
+              <p className="mt-2 max-w-[56ch] text-[15px] leading-relaxed text-ink-soft">
+                Как только выйдет первая версия, она появится здесь, а кнопка «Скачать» начнёт загрузку автоматически.
+                Новости — в Telegram-группе.
+              </p>
+              <a
+                href={LINKS.telegram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex min-h-10 items-center rounded-[9px] bg-ink px-4 text-[14px] font-semibold text-paper transition-colors duration-150 hover:bg-night-2"
+              >
+                Открыть Telegram
+              </a>
+            </div>
+          ) : null}
+
+          {status === "ready" ? (
+            <>
+              <ol className="mt-8 divide-y divide-line border-y border-line">
+                {shown.map((release) => (
+                  <ViewTransition key={release.id} enter="vt-soft">
+                    <ReleaseRow release={release} isLatest={latest?.id === release.id} />
+                  </ViewTransition>
+                ))}
+              </ol>
+
+              {releases.length > 5 ? (
+                <div className="mt-5">
+                  <button
+                    type="button"
+                    onClick={() => startTransition(() => setShowAll((value) => !value))}
+                    className="min-h-10 rounded-[9px] border border-line px-4 text-[14px] font-semibold text-ink transition-colors duration-150 hover:bg-paper-2"
+                  >
+                    {showAll ? "Свернуть" : `Показать все версии (${releases.length})`}
+                  </button>
+                </div>
+              ) : null}
+            </>
+          ) : null}
+        </div>
       </div>
     </section>
   );

@@ -1,49 +1,59 @@
-import { Download, MousePointerClick, Radio, MonitorCheck } from "lucide-react";
-import { SectionTitle } from "./Features";
-import DownloadButton from "./DownloadButton";
+import { Download, MonitorCheck, MousePointerClick, Radio } from "lucide-react";
+import { DownloadButton, DownloadMeta } from "./DownloadButton";
+import SectionHeading from "./SectionHeading";
 
 const STEPS = [
-  { icon: Download, title: "Скачайте файл", text: "Нажмите «Скачать» — загрузится последняя версия YawaChat в виде одного .exe файла." },
-  { icon: MousePointerClick, title: "Запустите", text: "Установка не нужна: просто откройте скачанный файл." },
-  { icon: Radio, title: "Добавьте каналы", text: "Подключите свои площадки и начинайте работу — вся лента сразу в одном окне." },
+  {
+    icon: Download,
+    title: "Скачайте файл",
+    text: "Нажмите «Скачать» — загрузится последняя версия YawaChat одним файлом .exe.",
+  },
+  {
+    icon: MousePointerClick,
+    title: "Запустите",
+    text: "Установка не нужна: откройте скачанный файл, и приложение готово к работе.",
+  },
+  {
+    icon: Radio,
+    title: "Добавьте каналы",
+    text: "Подключите свои площадки — вся лента сразу окажется в одном окне.",
+  },
 ];
 
 export default function Install() {
   return (
-    <section id="install" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
-      <SectionTitle
-        kicker="Установка"
-        title={
-          <>
-            Три шага — и <span className="grad-text">вы в эфире</span>
-          </>
-        }
-      />
+    <section id="install" className="border-t border-line">
+      <div className="wrap py-16 sm:py-24">
+        <SectionHeading title="Установка за три шага" lead="Один файл, без установщика и без регистрации." />
 
-      <ol className="grid gap-4 md:grid-cols-3">
-        {STEPS.map((s, i) => (
-          <li key={s.title} className="glass relative rounded-3xl p-6">
-            <span className="font-display absolute right-5 top-4 text-5xl font-extrabold text-white/[0.06]">{i + 1}</span>
-            <span className="mb-4 grid size-12 place-items-center rounded-2xl bg-violet-500/20 text-violet-300">
-              <s.icon className="size-6" />
-            </span>
-            <h3 className="text-lg font-bold">{s.title}</h3>
-            <p className="mt-2 text-[15px] leading-relaxed text-violet-100/65">{s.text}</p>
-          </li>
-        ))}
-      </ol>
+        <ol className="mt-10 grid gap-8 sm:grid-cols-3 sm:gap-8">
+          {STEPS.map((step, index) => (
+            <li key={step.title} className="border-t border-line pt-5">
+              <div className="flex items-baseline gap-3">
+                <span className="font-display text-[17px] font-bold text-ink-faint [font-variant-numeric:tabular-nums]">
+                  {index + 1}
+                </span>
+                <step.icon className="size-[18px] text-ink-faint" aria-hidden="true" />
+              </div>
+              <h3 className="mt-3 font-sans text-[17px] font-semibold leading-snug">{step.title}</h3>
+              <p className="mt-1.5 text-[15px] leading-relaxed text-ink-soft">{step.text}</p>
+            </li>
+          ))}
+        </ol>
 
-      <div className="glass mt-4 flex items-start gap-4 rounded-3xl p-5 sm:p-6">
-        <MonitorCheck className="mt-0.5 size-6 shrink-0 text-cyan-300" />
-        <p className="text-[15px] leading-relaxed text-violet-100/70">
-          Приложение работает на <b className="text-white">Windows 10 и 11</b>. Ему нужен компонент{" "}
-          <b className="text-white">Microsoft Edge WebView2</b>: в Windows 11 он есть изначально, а если его нет —
-          приложение само предложит установить его в один клик.
-        </p>
-      </div>
+        <div className="mt-10 flex gap-3 rounded-[14px] bg-paper-2 p-5 sm:p-6">
+          <MonitorCheck className="mt-0.5 size-5 shrink-0 text-ink-faint" aria-hidden="true" />
+          <p className="max-w-[70ch] text-[15px] leading-relaxed text-ink-soft">
+            Приложение работает на <strong className="font-semibold text-ink">Windows 10 и 11</strong>. Ему нужен компонент{" "}
+            <strong className="font-semibold text-ink">Microsoft Edge WebView2</strong>: в Windows 11 он есть изначально, а
+            если его нет — приложение само предложит установить его в один клик.
+          </p>
+        </div>
 
-      <div className="mt-10 flex justify-center">
-        <DownloadButton showMeta className="items-center" />
+        <div className="mt-9">
+          <DownloadButton variant="primary" />
+          <DownloadMeta className="mt-3.5" />
+        </div>
       </div>
     </section>
   );
