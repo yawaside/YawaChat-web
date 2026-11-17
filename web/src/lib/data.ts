@@ -197,11 +197,11 @@ export interface DemoMessage {
 }
 
 export const DEMO_MESSAGES: DemoMessage[] = [
-  { platform: 0, user: "nightowl_k", color: "#c4b5fd", text: "Привет из Twitch! Звук огонь 🔥", time: "21:04" },
+  { platform: 0, user: "nightowl_k", color: "#c4b5fd", text: "Привет из Twitch! Звук огонь", time: "21:04" },
   { platform: 1, user: "Марина В.", color: "#fda4af", text: "А когда следующий стрим?", time: "21:04" },
   { platform: 2, user: "ВанёкGames", color: "#93c5fd", text: "Вижу чат из ВК, всё работает", time: "21:05" },
   { platform: 3, user: "kickfan_77", color: "#bef264", text: "Kick в деле, лента единая", time: "21:05" },
-  { platform: 4, user: "tiktok_sasha", color: "#67e8f9", text: "Лайки летят 💜", time: "21:05" },
+  { platform: 4, user: "tiktok_sasha", color: "#67e8f9", text: "Лайки летят", time: "21:05" },
   {
     platform: 6,
     user: "Аноним",
@@ -220,7 +220,7 @@ export const DEMO_MESSAGES: DemoMessage[] = [
     time: "21:07",
     event: "Подписка",
   },
-  { platform: 1, user: "StreamFan", color: "#f9a8d4", text: "Смайлы 7TV анимированные 😍", time: "21:08" },
+  { platform: 1, user: "StreamFan", color: "#f9a8d4", text: "Смайлы 7TV анимированные", time: "21:08" },
 ];
 
 /** Экраны в горизонтальной витрине героя. */

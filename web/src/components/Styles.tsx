@@ -1,71 +1,110 @@
 import SectionHead from "./SectionHead";
 
-const STYLES = [
+interface Style {
+  name: string;
+  hint: string;
+  background: string;
+  ink: string;
+  lines: [string, string][];
+}
+
+const STYLES: Style[] = [
   {
     name: "Неон",
     hint: "свечение и контур",
-    background:
-      "radial-gradient(120% 120% at 20% 0%, #7b5cff 0%, #25124e 45%, #0a0714 100%)",
+    background: "radial-gradient(120% 120% at 20% 0%, #7b5cff 0%, #25124e 45%, #0a0714 100%)",
     ink: "#eadfff",
+    lines: [
+      ["nightowl_k", "светится в темноте"],
+      ["Марина В.", "контур на никах"],
+    ],
   },
   {
     name: "Терминал",
     hint: "моно и зелёный",
-    background: "linear-gradient(160deg, #07160f, #030a07)",
+    background: "linear-gradient(160deg, #0a1f14, #030a07)",
     ink: "#6ef2a3",
+    lines: [
+      ["root@obs", "$ chat --start"],
+      ["mod", "правила в силе"],
+    ],
   },
   {
     name: "Пиксель",
     hint: "8-битная сетка",
-    background: "linear-gradient(160deg, #171029, #0a0714)",
+    background: "linear-gradient(160deg, #1d1435, #0a0714)",
     ink: "#ffd166",
+    lines: [
+      ["8bit_max", "HP 100/100"],
+      ["pixel_cat", "+1 жизнь"],
+    ],
   },
   {
     name: "Стекло",
     hint: "размытие и свет",
-    background: "linear-gradient(160deg, #2b2f4a, #0a0714)",
-    ink: "#e6ebff",
+    background: "linear-gradient(160deg, #3a4166, #0d0f1c)",
+    ink: "#e9eeff",
+    lines: [
+      ["Марина В.", "размытие и свет"],
+      ["glasser", "прозрачные плашки"],
+    ],
   },
   {
     name: "Ретровейв",
     hint: "закат и сетка",
     background: "linear-gradient(160deg, #ff4d9d, #7b5cff 55%, #4be0ff)",
-    ink: "#120a1e",
+    ink: "#160b22",
+    lines: [
+      ["dj_sunset", "закат по расписанию"],
+      ["vaper", "сетка на фоне"],
+    ],
   },
   {
     name: "Rust",
     hint: "для Rust и Tarkov",
-    background: "linear-gradient(160deg, #7a3a12, #2a1408)",
+    background: "linear-gradient(160deg, #8a4114, #2a1408)",
     ink: "#ffd6b0",
+    lines: [
+      ["tarkov_pro", "вылазка в 21:00"],
+      ["rust_kid", "рейд через 5 минут"],
+    ],
   },
   {
     name: "Кибер",
     hint: "жёсткие формы",
-    background: "linear-gradient(160deg, #0b2f3a, #08121a)",
+    background: "linear-gradient(160deg, #0d3a47, #08121a)",
     ink: "#4be0ff",
+    lines: [
+      ["neon_ghost", "доступ разрешён"],
+      ["cipher", "канал защищён"],
+    ],
   },
 ];
 
-function StyleCard({ name, hint, background, ink }: (typeof STYLES)[number]) {
+function StyleCard({ name, hint, background, ink, lines }: Style) {
   return (
-    <div
-      className="relative w-[196px] shrink-0 overflow-hidden rounded-[18px] border border-white/10"
+    <figure
+      className="relative w-[208px] shrink-0 overflow-hidden rounded-[18px] border border-white/10"
       style={{ background }}
     >
-      <div className="flex h-[132px] flex-col justify-between p-3.5">
-        <span className="text-[10.5px] font-medium uppercase tracking-[0.14em]" style={{ color: ink, opacity: 0.65 }}>
-          стиль
-        </span>
-        <div>
+      <div className="flex h-[150px] flex-col justify-between p-3.5">
+        <div className="space-y-1.5 text-[10.5px] leading-snug" style={{ color: ink }}>
+          {lines.map(([nick, text], i) => (
+            <p key={nick} style={{ opacity: i === 0 ? 0.85 : 0.6 }}>
+              <span className="font-semibold">{nick}</span> {text}
+            </p>
+          ))}
+        </div>
+        <figcaption>
           <span className="font-display text-[17px] font-semibold leading-tight" style={{ color: ink }}>
             {name}
           </span>
           <span className="mt-0.5 block text-[11.5px]" style={{ color: ink, opacity: 0.6 }}>
             {hint}
           </span>
-        </div>
+        </figcaption>
       </div>
-    </div>
+    </figure>
   );
 }
 
@@ -78,7 +117,7 @@ export default function Styles() {
           title="25 стилей на три поверхности"
           lead="Один набор стилей действует сразу на ленту, виджет OBS и оверлей — эфир выглядит цельно."
         />
-        <p className="text-[13.5px] text-faint">прокрутите в сторону →</p>
+        <p className="text-[13.5px] text-faint">листайте в сторону</p>
       </div>
 
       <div className="strip -mx-5 mt-8 px-5 sm:-mx-8 sm:px-8" role="list" aria-label="Примеры стилей">
