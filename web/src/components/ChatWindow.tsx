@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Search, Shield } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Pause, Play, Search, Shield } from "lucide-react";
 import { DEMO_MESSAGES, PLATFORMS, type DemoMessage } from "../lib/data";
 import { usePrefersReducedMotion } from "../lib/usePrefersReducedMotion";
 import logo from "../assets/logo.png?inline";
@@ -7,6 +7,7 @@ import logo from "../assets/logo.png?inline";
 type Variant = "full" | "compact";
 
 const MAX_LINES = 5;
+const TICK = 2800;
 
 function PlatformBadge({ index }: { index: number }) {
   const platform = PLATFORMS[index];
@@ -60,12 +61,25 @@ export default function ChatWindow({ variant = "full" }: { variant?: Variant }) 
   const animated = variant === "full" && !reduced;
   const lines = variant === "full" ? MAX_LINES : 3;
   const [cursor, setCursor] = useState(lines);
+  const [playing, setPlaying] = useState(true);
+  const [inView, setInView] = useState(true);
+  const windowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!animated) return;
-    const id = window.setInterval(() => setCursor((value) => value + 1), 2800);
+    const node = windowRef.current;
+    if (!node || variant !== "full" || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver((entries) => setInView(entries[0]?.isIntersecting ?? true), {
+      threshold: 0.2,
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [variant]);
+
+  useEffect(() => {
+    if (!animated || !playing || !inView) return;
+    const id = window.setInterval(() => setCursor((value) => value + 1), TICK);
     return () => window.clearInterval(id);
-  }, [animated]);
+  }, [animated, playing, inView]);
 
   const visible: number[] = [];
   for (let offset = 0; offset < lines; offset += 1) {
@@ -73,7 +87,7 @@ export default function ChatWindow({ variant = "full" }: { variant?: Variant }) 
   }
 
   return (
-    <div className="app-window w-full" aria-hidden="true">
+    <div ref={windowRef} className="app-window w-full">
       <div className="flex items-center gap-2.5 border-b border-night-line px-4 py-3">
         <img src={logo} alt="" width={22} height={22} className="size-[22px] rounded-[6px]" />
         <span className="font-display text-[13px] font-bold tracking-tight">YawaChat</span>
@@ -82,10 +96,21 @@ export default function ChatWindow({ variant = "full" }: { variant?: Variant }) 
           <span className="size-1.5 rounded-full bg-live" />
           в эфире
         </span>
+        {animated ? (
+          <button
+            type="button"
+            onClick={() => setPlaying((value) => !value)}
+            aria-label={playing ? "Остановить ленту" : "Запустить ленту"}
+            aria-pressed={!playing}
+            className="grid size-6 shrink-0 place-items-center rounded-[5px] text-white/50 transition-colors duration-150 hover:bg-white/10 hover:text-white/80"
+          >
+            {playing ? <Pause className="size-3" aria-hidden="true" /> : <Play className="size-3" aria-hidden="true" />}
+          </button>
+        ) : null}
       </div>
 
       {variant === "full" ? (
-        <div className="flex flex-wrap gap-1.5 px-4 pt-3">
+        <div className="flex flex-wrap gap-1.5 px-4 pt-3" aria-hidden="true">
           {PLATFORMS.map((platform) => (
             <span
               key={platform.id}
@@ -102,13 +127,14 @@ export default function ChatWindow({ variant = "full" }: { variant?: Variant }) 
         className={`flex flex-col justify-end gap-1.5 overflow-hidden px-2 py-3 ${
           variant === "full" ? "h-[248px] sm:h-[266px]" : "h-[150px]"
         }`}
+        aria-hidden="true"
       >
         {visible.map((key) => (
           <MessageRow key={key} message={DEMO_MESSAGES[((key % DEMO_MESSAGES.length) + DEMO_MESSAGES.length) % DEMO_MESSAGES.length]} />
         ))}
       </div>
 
-      <div className="flex items-center gap-2 border-t border-night-line px-4 py-2.5 text-[11px] text-white/50">
+      <div className="flex items-center gap-2 border-t border-night-line px-4 py-2.5 text-[11px] text-white/50" aria-hidden="true">
         <Search className="size-3.5" aria-hidden="true" />
         Поиск по ленте
         <span className="ml-auto">Иллюстрация</span>
