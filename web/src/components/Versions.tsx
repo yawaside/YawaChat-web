@@ -2,7 +2,7 @@ import { startTransition, useId, useState, ViewTransition } from "react";
 import { ChevronDown, Download, RefreshCw } from "lucide-react";
 import { LINKS } from "../lib/data";
 import { useReleasesValue } from "../lib/ReleasesContext";
-import { formatCount, formatDate, formatSize, type Release } from "../lib/releases";
+import { EDITIONS, EDITION_ORDER, formatCount, formatDate, formatSize, type Release } from "../lib/releases";
 import Clause from "./Clause";
 
 const INLINE_PATTERN = /(\*\*[^*]+\*\*|`[^`]+`)/g;
@@ -84,6 +84,9 @@ function ReleaseRow({ release, isLatest }: { release: Release; isLatest: boolean
   const [open, setOpen] = useState(isLatest);
   const panelId = useId();
 
+  const builds = EDITION_ORDER.map((edition) => release.assets[edition]).filter(Boolean);
+  const downloads = builds.reduce((sum, asset) => sum + (asset?.downloads ?? 0), 0);
+
   return (
     <li className="border-t border-white/10 py-4">
       <div className="flex flex-wrap items-start gap-x-5 gap-y-2">
@@ -106,22 +109,28 @@ function ReleaseRow({ release, isLatest }: { release: Release; isLatest: boolean
             </span>
             <span className="mt-1 flex flex-wrap gap-x-3 text-[12.5px] tabular-nums text-faint">
               <time dateTime={release.date}>{formatDate(release.date)}</time>
-              {release.asset ? <span>{formatSize(release.asset.size)}</span> : null}
-              {release.asset ? <span>{formatCount(release.asset.downloads)} скачиваний</span> : null}
+              {builds.length ? <span>{formatCount(downloads)} скачиваний</span> : null}
             </span>
           </span>
         </button>
 
-        {release.asset ? (
-          <button
-            type="button"
-            onClick={() => download(release)}
-            className="inline-flex min-h-8 items-center gap-1.5 text-[13.5px] text-muted underline decoration-white/25 underline-offset-[5px] transition-colors duration-150 hover:text-text hover:decoration-white/60"
-          >
-            <Download className="size-3.5" aria-hidden="true" />
-            Скачать
-          </button>
-        ) : null}
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+          {EDITION_ORDER.filter((edition) => release.assets[edition]).map((edition) => {
+            const asset = release.assets[edition];
+            return (
+              <button
+                key={edition}
+                type="button"
+                onClick={() => download(release, edition)}
+                className="inline-flex min-h-8 items-center gap-1.5 text-[13.5px] text-muted underline decoration-white/25 underline-offset-[5px] transition-colors duration-150 hover:text-text hover:decoration-white/60"
+              >
+                <Download className="size-3.5" aria-hidden="true" />
+                {EDITIONS[edition].short}
+                {asset ? <span className="tabular-nums text-faint">{formatSize(asset.size)}</span> : null}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="accordion mt-2" data-open={open}>

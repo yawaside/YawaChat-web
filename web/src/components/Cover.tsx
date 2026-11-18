@@ -32,7 +32,7 @@ export default function Cover() {
             <span aria-hidden="true" className="text-white/25">
               /
             </span>
-            <span>без установки</span>
+            <span>портативная и установщик</span>
           </div>
 
           <h1 className="mt-5 text-[clamp(2.3rem,5.4vw,4.2rem)] leading-[0.95]">Чат всех ваших стримов в одном окне</h1>

@@ -1,11 +1,18 @@
 import Clause from "./Clause";
 import { DownloadButton, DownloadMeta } from "./DownloadButton";
+import { EDITIONS, EDITION_ORDER, type Edition } from "../lib/releases";
 
 const STEPS = [
-  { title: "Скачайте файл", text: "Один .exe — последняя версия приложения." },
-  { title: "Запустите", text: "Установка не нужна: откройте скачанный файл." },
+  { title: "Скачайте файл", text: "Портативная версия или установщик — на выбор." },
+  { title: "Запустите", text: "Портативная запускается сразу, установщик проведёт мастер за пару кликов." },
   { title: "Добавьте каналы", text: "Подключите площадки — лента соберётся сама." },
 ];
+
+const BUILD_TEXT: Record<Edition, string> = {
+  portable: "Один .exe: распакуйте в любую папку и запускайте. В систему ничего не ставится, настройки хранятся рядом.",
+  installer:
+    "Мастер Inno Setup: ярлыки в меню «Пуск», запись в списке программ Windows и штатное удаление. Удобно, если приложение должно быть «как обычное».",
+};
 
 export default function Install() {
   return (
@@ -15,7 +22,7 @@ export default function Install() {
       label="Установка"
       meta="2 минуты"
       title="Три шага и вы в эфире"
-      lead="Без установщика, без регистрации и без настройки с нуля."
+      lead="Без регистрации и без настройки с нуля — выберите, как ставить приложение."
     >
       <ol>
         {STEPS.map((step, index) => (
@@ -29,6 +36,15 @@ export default function Install() {
           </li>
         ))}
       </ol>
+
+      <dl className="mt-8 grid gap-x-12 gap-y-5 border-t border-white/10 pt-6 sm:grid-cols-2">
+        {EDITION_ORDER.map((edition: Edition) => (
+          <div key={edition}>
+            <dt className="text-[15.5px] font-semibold text-text">{EDITIONS[edition].label}</dt>
+            <dd className="mt-1.5 text-[14.4px] leading-relaxed text-muted">{BUILD_TEXT[edition]}</dd>
+          </div>
+        ))}
+      </dl>
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-x-10 gap-y-6 border-t border-white/10 pt-6">
         <p className="max-w-[54ch] text-[14.6px] leading-relaxed text-muted">

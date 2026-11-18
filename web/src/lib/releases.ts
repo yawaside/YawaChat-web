@@ -3,15 +3,36 @@ import { useCallback, useEffect, useState } from "react";
 const API = "https://api.github.com/repos/yawaside/yawachat-Releases/releases?per_page=30";
 /** Если API недоступен — страница «последний релиз» сама перенаправит на актуальную версию. */
 const FALLBACK = "https://github.com/yawaside/yawachat-Releases/releases/latest";
+/** Страница всех релизов — на случай, когда скачивать пока нечего. */
+export const RELEASES_PAGE = "https://github.com/yawaside/yawachat-Releases/releases";
 
-const CACHE_KEY = "yawachat-releases-v2";
+const CACHE_KEY = "yawachat-releases-v3";
 const CACHE_TTL = 5 * 60 * 1000;
+
+/** Две сборки одного релиза: портативная и установщик. */
+export type Edition = "portable" | "installer";
+
+export const EDITION_ORDER: Edition[] = ["portable", "installer"];
+
+export const EDITIONS: Record<Edition, { label: string; short: string; hint: string }> = {
+  portable: {
+    label: "Портативная версия",
+    short: "Портативная",
+    hint: "Один .exe, запускается из любой папки — установка не нужна",
+  },
+  installer: {
+    label: "Установщик Inno Setup",
+    short: "Установщик",
+    hint: "Мастер Inno Setup: ярлыки в меню «Пуск» и удаление штатно",
+  },
+};
 
 export interface Asset {
   name: string;
   size: number;
   url: string;
   downloads: number;
+  edition: Edition;
 }
 
 export interface Release {
@@ -21,7 +42,7 @@ export interface Release {
   date: string;
   notes: string;
   prerelease: boolean;
-  asset: Asset | null;
+  assets: Record<Edition, Asset | null>;
 }
 
 export type ReleasesStatus = "loading" | "ready" | "empty" | "error";
@@ -49,20 +70,48 @@ const dateFormat = new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "lo
 const sizeFormat = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 1 });
 const countFormat = new Intl.NumberFormat("ru-RU");
 
-function pickAsset(assets: RawAsset[]): Asset | null {
-  if (!assets?.length) return null;
-  const rank = (name: string) => {
-    const lower = name.toLowerCase();
-    if (lower.endsWith(".exe")) return 0;
-    if (lower.endsWith(".msi")) return 1;
-    if (lower.endsWith(".zip")) return 2;
-    return 3;
-  };
-  let best = assets[0];
-  for (const asset of assets) {
-    if (rank(asset.name) < rank(best.name)) best = asset;
+/**
+ * Имя файла говорит, какая это сборка: «YawaChat 1.4.0(P).exe» — портативная,
+ * «YawaChat 1.4.0(I).exe» — установщик. Файлы без метки считаем портативными.
+ */
+function detectEdition(name: string): Edition {
+  return /\(i\)|installer|setup/i.test(name) ? "installer" : "portable";
+}
+
+function rank(name: string) {
+  const lower = name.toLowerCase();
+  if (lower.endsWith(".exe")) return 0;
+  if (lower.endsWith(".msi")) return 1;
+  if (lower.endsWith(".zip")) return 2;
+  return 3;
+}
+
+function pickAssets(assets: RawAsset[]): Record<Edition, Asset | null> {
+  const best: Record<Edition, { asset: Asset; rank: number } | null> = { portable: null, installer: null };
+
+  for (const raw of assets ?? []) {
+    const edition = detectEdition(raw.name);
+    const current = best[edition];
+    const value = rank(raw.name);
+    if (current && current.rank <= value) continue;
+    best[edition] = {
+      rank: value,
+      asset: {
+        name: raw.name,
+        size: raw.size,
+        url: raw.browser_download_url,
+        downloads: raw.download_count,
+        edition,
+      },
+    };
   }
-  return { name: best.name, size: best.size, url: best.browser_download_url, downloads: best.download_count };
+
+  return { portable: best.portable?.asset ?? null, installer: best.installer?.asset ?? null };
+}
+
+/** Есть ли в релизе хоть что-то для скачивания. */
+export function hasAssets(release: Release) {
+  return EDITION_ORDER.some((edition) => Boolean(release.assets[edition]));
 }
 
 function normalize(raw: RawRelease[]): Release[] {
@@ -76,7 +125,7 @@ function normalize(raw: RawRelease[]): Release[] {
       date: release.published_at || release.created_at,
       notes: release.body || "",
       prerelease: release.prerelease,
-      asset: pickAsset(release.assets),
+      assets: pickAssets(release.assets),
     });
   }
   return out;
@@ -155,14 +204,15 @@ export function useReleases() {
     void load();
   }, [load]);
 
-  const latest = releases.find((r) => !r.prerelease && r.asset) ?? releases.find((r) => r.asset) ?? null;
+  const latest = releases.find((r) => !r.prerelease && hasAssets(r)) ?? releases.find(hasAssets) ?? null;
 
-  /** Скачивает последний релиз сразу. Возвращает false, если скачивать пока нечего. */
+  /** Скачивает нужную сборку последнего релиза. Возвращает false, если скачивать пока нечего. */
   const download = useCallback(
-    (release?: Release | null) => {
+    (release?: Release | null, edition: Edition = "portable") => {
       const target = release ?? latest;
-      if (target?.asset) {
-        startDownload(target.asset.url);
+      const asset = target?.assets[edition] ?? target?.assets.portable ?? target?.assets.installer ?? null;
+      if (asset) {
+        startDownload(asset.url);
         return true;
       }
       if (status === "error") {
