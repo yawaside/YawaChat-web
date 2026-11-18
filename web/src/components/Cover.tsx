@@ -29,27 +29,17 @@ export default function Cover() {
               /
             </span>
             <span>бесплатно</span>
-            <span aria-hidden="true" className="text-white/25">
-              /
-            </span>
-            <span>портативная и установщик</span>
           </div>
 
           <h1 className="mt-5 text-[clamp(2.3rem,5.4vw,4.2rem)] leading-[0.95]">Чат всех ваших стримов в одном окне</h1>
 
-          <p className="mt-6 max-w-[46ch] text-[17px] leading-relaxed text-muted">
-            YawaChat собирает чаты Twitch, YouTube, VK Видео Live, Kick, TikTok, Rutube и Boosty в одну ленту. Сообщения,
-            донаты и подписки — в одном окне вместо семи вкладок.
+          <p className="mt-6 max-w-[42ch] text-[17.5px] leading-[1.65] text-muted">
+            Пока вы в игре, сообщения, донаты и события канала приходят в одно окно — без переключения между сайтами
+            площадок и без второго монитора.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
             <DownloadButton />
-            <a
-              href="#versions"
-              className="text-[15px] text-muted underline decoration-white/25 underline-offset-[6px] transition-colors duration-150 hover:text-text hover:decoration-white/60"
-            >
-              Все версии
-            </a>
           </div>
           <DownloadMeta className="mt-3" />
         </div>

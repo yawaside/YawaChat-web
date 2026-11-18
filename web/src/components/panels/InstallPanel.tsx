@@ -1,6 +1,5 @@
-import Clause from "./Clause";
-import { DownloadButton, DownloadMeta } from "./DownloadButton";
-import { EDITIONS, EDITION_ORDER, type Edition } from "../lib/releases";
+import { EDITIONS, EDITION_ORDER, type Edition } from "../../lib/releases";
+import { DownloadButton, DownloadMeta } from "../DownloadButton";
 
 const STEPS = [
   { title: "Скачайте файл", text: "Портативная версия или установщик — на выбор." },
@@ -14,21 +13,19 @@ const BUILD_TEXT: Record<Edition, string> = {
     "Мастер Inno Setup: ярлыки в меню «Пуск», запись в списке программ Windows и штатное удаление. Удобно, если приложение должно быть «как обычное».",
 };
 
-export default function Install() {
+export default function InstallPanel() {
   return (
-    <Clause
-      id="install"
-      number="03"
-      label="Установка"
-      meta="2 минуты"
-      title="Три шага и вы в эфире"
-      lead="Без регистрации и без настройки с нуля — выберите, как ставить приложение."
-    >
-      <ol>
+    <div>
+      <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+        <DownloadButton />
+        <DownloadMeta />
+      </div>
+
+      <ol className="mt-9">
         {STEPS.map((step, index) => (
           <li
             key={step.title}
-            className="grid gap-x-6 gap-y-1 border-t border-white/10 py-5 sm:grid-cols-[44px_minmax(0,0.9fr)_minmax(0,1.3fr)]"
+            className="grid gap-x-6 gap-y-1 border-t border-white/10 py-4 first:border-t-0 sm:grid-cols-[40px_minmax(0,0.85fr)_minmax(0,1.3fr)]"
           >
             <span className="text-[13px] tabular-nums text-faint">0{index + 1}</span>
             <h3 className="font-sans text-[16.5px] font-semibold leading-snug">{step.title}</h3>
@@ -37,8 +34,8 @@ export default function Install() {
         ))}
       </ol>
 
-      <dl className="mt-8 grid gap-x-12 gap-y-5 border-t border-white/10 pt-6 sm:grid-cols-2">
-        {EDITION_ORDER.map((edition: Edition) => (
+      <dl className="mt-6 grid gap-x-12 gap-y-5 border-t border-white/10 pt-6 sm:grid-cols-2">
+        {EDITION_ORDER.map((edition) => (
           <div key={edition}>
             <dt className="text-[15.5px] font-semibold text-text">{EDITIONS[edition].label}</dt>
             <dd className="mt-1.5 text-[14.4px] leading-relaxed text-muted">{BUILD_TEXT[edition]}</dd>
@@ -46,17 +43,10 @@ export default function Install() {
         ))}
       </dl>
 
-      <div className="mt-8 flex flex-wrap items-center justify-between gap-x-10 gap-y-6 border-t border-white/10 pt-6">
-        <p className="max-w-[54ch] text-[14.6px] leading-relaxed text-muted">
-          Работает на <span className="font-semibold text-text">Windows 10 и 11</span>. Нужен компонент{" "}
-          <span className="font-semibold text-text">Microsoft Edge WebView2</span>: в Windows 11 он уже есть, а если нет —
-          приложение предложит установить его в один клик.
-        </p>
-        <div>
-          <DownloadButton />
-          <DownloadMeta className="mt-2.5" />
-        </div>
-      </div>
-    </Clause>
+      <p className="mt-7 max-w-[62ch] text-[14.4px] leading-relaxed text-faint">
+        Нужен компонент <span className="font-semibold text-muted">Microsoft Edge WebView2</span>: в Windows 11 он уже есть, а
+        если нет — приложение предложит установить его в один клик.
+      </p>
+    </div>
   );
 }

@@ -1,18 +1,16 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import logo from "../assets/logo.png?inline";
+import { SECTIONS, type SectionId } from "../lib/sections";
 import { DownloadButton } from "./DownloadButton";
 
-const NAV = [
-  { href: "#features", label: "Возможности" },
-  { href: "#styles", label: "Оформление" },
-  { href: "#install", label: "Установка" },
-  { href: "#versions", label: "Релизы" },
-  { href: "#community", label: "Сообщество" },
-];
+interface Props {
+  openSection: SectionId | null;
+  onOpen: (id: SectionId) => void;
+}
 
-export default function SiteHeader() {
-  const [open, setOpen] = useState(false);
+export default function SiteHeader({ openSection, onOpen }: Props) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -23,9 +21,9 @@ export default function SiteHeader() {
   }, []);
 
   useEffect(() => {
-    if (!open) return;
+    if (!menuOpen) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") setMenuOpen(false);
     };
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
@@ -33,29 +31,39 @@ export default function SiteHeader() {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", onKey);
     };
-  }, [open]);
+  }, [menuOpen]);
+
+  const open = (id: SectionId) => {
+    setMenuOpen(false);
+    onOpen(id);
+  };
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-200 ${
-        scrolled || open ? "border-b border-white/10 bg-bg/85 backdrop-blur-xl" : "border-b border-transparent"
+        scrolled || menuOpen ? "border-b border-white/10 bg-bg/85 backdrop-blur-xl" : "border-b border-transparent"
       }`}
     >
       <div className="wrap flex h-[68px] items-center gap-6">
-        <a href="#top" className="flex shrink-0 items-center gap-2.5" onClick={() => setOpen(false)}>
+        <a href="#top" className="flex shrink-0 items-center gap-2.5" onClick={() => setMenuOpen(false)}>
           <img src={logo} alt="" width={32} height={32} className="size-8 rounded-[9px]" />
           <span className="font-display text-[17px] font-bold tracking-tight">YawaChat</span>
         </a>
 
-        <nav aria-label="Разделы страницы" className="ml-3 hidden items-center gap-6 lg:flex">
-          {NAV.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="text-[14.5px] font-medium text-muted transition-colors duration-150 hover:text-text"
+        <nav aria-label="Разделы сайта" className="ml-3 hidden items-center gap-1 lg:flex">
+          {SECTIONS.map((section) => (
+            <button
+              key={section.id}
+              type="button"
+              onClick={() => open(section.id)}
+              aria-haspopup="dialog"
+              aria-expanded={openSection === section.id}
+              className={`rounded-full px-3 py-2 text-[14.5px] font-medium transition-colors duration-150 hover:bg-white/8 hover:text-text ${
+                openSection === section.id ? "text-text" : "text-muted"
+              }`}
             >
-              {item.label}
-            </a>
+              {section.label}
+            </button>
           ))}
         </nav>
 
@@ -65,31 +73,32 @@ export default function SiteHeader() {
 
         <button
           type="button"
-          onClick={() => setOpen((value) => !value)}
-          aria-label={open ? "Закрыть меню" : "Открыть меню"}
-          aria-expanded={open}
+          onClick={() => setMenuOpen((value) => !value)}
+          aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
+          aria-expanded={menuOpen}
           aria-controls="site-menu"
           className="ml-auto grid size-11 place-items-center rounded-full border border-white/15 text-text transition-colors duration-150 hover:bg-white/10 sm:ml-0 lg:hidden"
         >
-          {open ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
+          {menuOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
         </button>
       </div>
 
-      {open ? (
+      {menuOpen ? (
         <div
           id="site-menu"
-          className="max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t border-line bg-bg px-5 pb-8 pt-2 lg:hidden"
+          className="max-h-[calc(100dvh-4.25rem)] overflow-y-auto overscroll-contain border-t border-white/10 bg-bg px-5 pb-8 pt-2 lg:hidden"
         >
-          <nav aria-label="Разделы страницы" className="flex flex-col">
-            {NAV.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="border-b border-white/10 py-3.5 text-[17px] font-medium"
+          <nav aria-label="Разделы сайта" className="flex flex-col">
+            {SECTIONS.map((section) => (
+              <button
+                key={section.id}
+                type="button"
+                onClick={() => open(section.id)}
+                className="flex items-baseline gap-3 border-b border-white/10 py-3.5 text-left text-[17px] font-medium"
               >
-                {item.label}
-              </a>
+                <span className="text-[12px] tabular-nums text-faint">{section.number}</span>
+                {section.label}
+              </button>
             ))}
           </nav>
           <div className="mt-6">
