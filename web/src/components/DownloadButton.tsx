@@ -79,7 +79,9 @@ export function DownloadButton({ variant = "primary", className = "" }: Props) {
       ? "Релизов пока нет"
       : feedback === "started"
         ? "Загрузка началась"
-        : "Скачать для Windows";
+        : variant === "compact"
+          ? "Скачать"
+          : "Скачать для Windows";
 
   const Icon = loading ? Loader2 : empty ? Clock3 : feedback === "started" ? Check : Download;
 
@@ -174,14 +176,15 @@ export function DownloadMeta({ className = "" }: { className?: string }) {
 
   const line = (() => {
     if (status === "loading") return "Смотрим список релизов…";
-    if (status === "error" || !latest) return "Windows 10 и 11";
+    if (status === "empty") return "Первая сборка появится здесь же";
+    if (status === "error" || !latest) return "Скачивание со страницы релизов";
 
     const sizes = EDITION_ORDER.filter((edition) => latest.assets[edition]).map((edition) => {
       const asset = latest.assets[edition];
       return `${EDITIONS[edition].short.toLowerCase()} ${asset ? formatSize(asset.size) : ""}`.trim();
     });
 
-    const base = `v${latest.version}, Windows 10 и 11`;
+    const base = `v${latest.version}`;
     return sizes.length ? `${base} — ${sizes.join(", ")}` : base;
   })();
 

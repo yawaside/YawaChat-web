@@ -199,13 +199,13 @@
   grid-template-rows: 0fr;
   transition: grid-template-rows 240ms cubic-bezier(0.2, 0.7, 0.3, 1);
 }
-.accordion > div {
+.accordion > * {
   overflow: hidden;
 }
 .accordion[data-open="true"] {
   grid-template-rows: 1fr;
 }
-.accordion[data-open="false"] > div {
+.accordion[data-open="false"] > * {
   visibility: hidden;
 }
 
@@ -231,5 +231,25 @@
   }
   to {
     opacity: 0;
+  }
+}
+
+/* Мини-страница поверх главной: мягкий подъём панели. */
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.995);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.sheet-in {
+  animation: sheet-in 220ms cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sheet-in {
+    animation: none;
   }
 }

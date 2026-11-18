@@ -1,9 +1,8 @@
 import { startTransition, useId, useState, ViewTransition } from "react";
 import { ChevronDown, Download, RefreshCw } from "lucide-react";
-import { LINKS } from "../lib/data";
-import { useReleasesValue } from "../lib/ReleasesContext";
-import { EDITIONS, EDITION_ORDER, formatCount, formatDate, formatSize, type Release } from "../lib/releases";
-import Clause from "./Clause";
+import { LINKS } from "../../lib/data";
+import { useReleasesValue } from "../../lib/ReleasesContext";
+import { EDITIONS, EDITION_ORDER, formatCount, formatDate, formatSize, type Release } from "../../lib/releases";
 
 const INLINE_PATTERN = /(\*\*[^*]+\*\*|`[^`]+`)/g;
 
@@ -144,22 +143,19 @@ function ReleaseRow({ release, isLatest }: { release: Release; isLatest: boolean
   );
 }
 
-export default function Versions() {
+export default function VersionsPanel() {
   const { releases, latest, status, reload } = useReleasesValue();
   const [showAll, setShowAll] = useState(false);
   const shown = showAll ? releases : releases.slice(0, 5);
 
   return (
-    <Clause
-      id="versions"
-      number="04"
-      label="Релизы"
-      meta="github"
-      title="Все версии"
-      lead="Скачайте последнюю сборку или любую из предыдущих."
-    >
+    <div>
+      <p className="max-w-[62ch] text-[15.5px] leading-relaxed text-muted">
+        Последняя сборка или любая из предыдущих. У каждого релиза два файла: портативная версия и установщик.
+      </p>
+
       {status === "error" ? (
-        <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
           <p className="max-w-[58ch] text-[14px] leading-relaxed text-muted">
             Список версий не загрузился — возможно, GitHub недоступен. Кнопка «Скачать» всё равно откроет страницу последнего
             релиза.
@@ -176,7 +172,7 @@ export default function Versions() {
       ) : null}
 
       {status === "empty" ? (
-        <div>
+        <div className="mt-5">
           <p className="max-w-[58ch] text-[14.5px] leading-relaxed text-muted">
             Как только выйдет первая версия, она появится здесь, а кнопка «Скачать» начнёт загрузку автоматически. Новости — в
             Telegram-группе.
@@ -193,7 +189,7 @@ export default function Versions() {
       ) : null}
 
       {status === "loading" ? (
-        <div className="space-y-3" aria-hidden="true">
+        <div className="mt-5 space-y-3" aria-hidden="true">
           {[0, 1, 2].map((row) => (
             <div key={row} className="h-12 animate-pulse bg-white/5" />
           ))}
@@ -202,7 +198,7 @@ export default function Versions() {
 
       {status === "ready" ? (
         <>
-          <ol>
+          <ol className="mt-4">
             {shown.map((release) => (
               <ViewTransition key={release.id} enter="vt-soft">
                 <ReleaseRow release={release} isLatest={latest?.id === release.id} />
@@ -220,6 +216,6 @@ export default function Versions() {
           ) : null}
         </>
       ) : null}
-    </Clause>
+    </div>
   );
 }
