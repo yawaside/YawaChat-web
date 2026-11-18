@@ -46,7 +46,7 @@ export default function Cover() {
 
         <div className="mt-10 lg:mt-16 lg:max-w-[660px]">
           <div className="flex items-baseline justify-between gap-4 pb-1">
-            <span className="text-[12.5px] text-muted">Лента: так выглядит общий чат</span>
+            <span className="text-[12.5px] text-muted">Общий чат</span>
             <span className="flex items-center gap-1.5 text-[12.5px] text-cyan">
               <span className="live-dot size-1.5 rounded-full bg-cyan" aria-hidden="true" />в эфире
             </span>

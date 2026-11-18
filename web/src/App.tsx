@@ -4,7 +4,6 @@ import { getSection, isSectionId, type SectionId } from "./lib/sections";
 import SiteHeader from "./components/SiteHeader";
 import Cover from "./components/Cover";
 import Platforms from "./components/Platforms";
-import SectionNav from "./components/SectionNav";
 import Footer from "./components/Footer";
 import Sheet from "./components/Sheet";
 import FeaturesPanel from "./components/panels/FeaturesPanel";
@@ -69,7 +68,6 @@ export default function App() {
       <main id="main">
         <Cover />
         <Platforms />
-        <SectionNav onOpen={open} />
       </main>
 
       <Footer />
