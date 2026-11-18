@@ -6,7 +6,7 @@ const FALLBACK = "https://github.com/yawaside/yawachat-Releases/releases/latest"
 /** Страница всех релизов — на случай, когда скачивать пока нечего. */
 export const RELEASES_PAGE = "https://github.com/yawaside/yawachat-Releases/releases";
 
-const CACHE_KEY = "yawachat-releases-v3";
+const CACHE_KEY = "yawachat-releases-v4";
 const CACHE_TTL = 5 * 60 * 1000;
 
 /** Две сборки одного релиза: портативная и установщик. */
@@ -71,11 +71,16 @@ const sizeFormat = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 1 });
 const countFormat = new Intl.NumberFormat("ru-RU");
 
 /**
- * Имя файла говорит, какая это сборка: «YawaChat 1.4.0(P).exe» — портативная,
- * «YawaChat 1.4.0(I).exe» — установщик. Файлы без метки считаем портативными.
+ * Имя файла говорит, какая это сборка. Поддерживаем те метки, что реально
+ * встречаются в релизах: «YawaChat.2.6.3.I.exe» и «YawaChat 2.6.3 (I).exe» —
+ * установщик, «.P»/«(P)»/«portable» — портативная. Без метки — портативная.
  */
-function detectEdition(name: string): Edition {
-  return /\(i\)|installer|setup/i.test(name) ? "installer" : "portable";
+export function detectEdition(name: string): Edition {
+  const base = name.toLowerCase().replace(/\.(exe|msi|zip|7z)$/i, "");
+  const saysInstaller =
+    /[(\[._\- ]i[)\]._\- ]?$/.test(base) || /\b(installer|setup)\b/.test(base) || /[(\[._\- ]ins[)\]._\- ]?$/.test(base);
+  if (saysInstaller) return "installer";
+  return "portable";
 }
 
 function rank(name: string) {
