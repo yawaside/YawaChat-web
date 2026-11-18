@@ -199,13 +199,13 @@
   grid-template-rows: 0fr;
   transition: grid-template-rows 240ms cubic-bezier(0.2, 0.7, 0.3, 1);
 }
-.accordion > div {
+.accordion > * {
   overflow: hidden;
 }
 .accordion[data-open="true"] {
   grid-template-rows: 1fr;
 }
-.accordion[data-open="false"] > div {
+.accordion[data-open="false"] > * {
   visibility: hidden;
 }
 

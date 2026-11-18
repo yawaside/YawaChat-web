@@ -1,41 +1,42 @@
 import { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { FEATURE_TABS, type Feature } from "../../lib/data";
-import liveImage from "../../assets/live-studio.jpg?inline";
 
-function FeatureItem({ feature }: { feature: Feature }) {
+/** Строка-раскрывашка: вся строка кликабельна, подробности появляются под ней. */
+function FeatureRow({ feature }: { feature: Feature }) {
   const [open, setOpen] = useState(false);
   const panelId = useId();
 
   return (
-    <div className="mt-4 border-t border-white/10 pt-3 first:mt-0">
-      <dt className="text-[15.5px] font-semibold text-text">{feature.title}</dt>
-      <dd className="mt-1">
-        <p className="text-[14.2px] leading-[1.55] text-muted">{feature.short}</p>
-
-        <button
-          type="button"
-          onClick={() => setOpen((value) => !value)}
-          aria-expanded={open}
-          aria-controls={panelId}
-          className="mt-1 inline-flex min-h-7 items-center gap-1 text-[12.5px] text-faint transition-colors duration-150 hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
-        >
-          {open ? "Свернуть" : "Подробнее"}
+    <li className="border-t border-white/10 [break-inside:avoid]">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        aria-controls={panelId}
+        className="group w-full py-2.5 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan"
+      >
+        <span className="flex items-start justify-between gap-2">
+          <span className="text-[14.5px] font-semibold leading-snug text-text">{feature.title}</span>
           <ChevronDown
-            className={`size-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+            className={`mt-0.5 size-3.5 shrink-0 text-faint transition-transform duration-200 ${
+              open ? "rotate-180" : ""
+            }`}
             aria-hidden="true"
           />
-        </button>
+        </span>
 
-        <div className="accordion" data-open={open}>
-          <div>
-            <p id={panelId} className="pb-1 pt-1 text-[14.2px] leading-[1.62] text-muted/90">
-              {feature.text}
-            </p>
-          </div>
-        </div>
-      </dd>
-    </div>
+        <span className="mt-0.5 block text-[13.2px] leading-[1.45] text-muted transition-colors duration-150 group-hover:text-[#c4bde0]">
+          {feature.short}
+        </span>
+
+        <span id={panelId} className="accordion block" data-open={open}>
+          <span className="block">
+            <span className="block pt-1.5 text-[13.2px] leading-[1.55] text-muted/90">{feature.text}</span>
+          </span>
+        </span>
+      </button>
+    </li>
   );
 }
 
@@ -44,30 +45,19 @@ export default function FeaturesPanel() {
 
   return (
     <div>
-      <p className="max-w-[64ch] text-[15.5px] leading-relaxed text-muted">
-        {total} функций, и все работают вместе. Коротко о каждой — нажмите «Подробнее», если нужны детали.
+      <p className="max-w-[74ch] text-[15px] leading-relaxed text-muted">
+        {total} функций, и все работают вместе. Коротко о каждой — нажмите на строку, чтобы раскрыть детали.
       </p>
 
-      <figure className="mt-5 overflow-hidden rounded-[14px] border border-white/10">
-        <img
-          src={liveImage}
-          alt="Стример за столом: игра на мониторе и колонка чата рядом"
-          width={1600}
-          height={686}
-          loading="lazy"
-          className="h-[clamp(140px,17vw,190px)] w-full object-cover object-[70%_50%]"
-        />
-      </figure>
-
-      <div className="mt-7 grid gap-x-12 gap-y-7 sm:grid-cols-2">
+      <div className="mt-3 columns-1 gap-x-8 sm:columns-2 xl:columns-3">
         {FEATURE_TABS.map((tab) => (
-          <section key={tab.id}>
-            <h3 className="font-sans text-[12.5px] font-medium text-faint">{tab.label}</h3>
-            <dl className="mt-2">
+          <section key={tab.id} className="pb-2.5 [break-inside:avoid]">
+            <h3 className="font-sans text-[11.5px] font-medium text-faint [break-after:avoid]">{tab.label}</h3>
+            <ul>
               {tab.features.map((feature) => (
-                <FeatureItem key={feature.title} feature={feature} />
+                <FeatureRow key={feature.title} feature={feature} />
               ))}
-            </dl>
+            </ul>
           </section>
         ))}
       </div>

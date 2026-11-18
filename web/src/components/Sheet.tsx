@@ -70,7 +70,7 @@ export default function Sheet({ number, title, onClose, children }: Props) {
         aria-labelledby={titleId}
         tabIndex={-1}
         onKeyDown={trapFocus}
-        className="sheet-in relative flex w-full max-w-[1060px] flex-col overflow-hidden rounded-[18px] border border-white/12 bg-[#0b0817] shadow-[0_48px_120px_-40px_rgba(0,0,0,0.95)] focus:outline-none"
+        className="sheet-in relative flex max-h-[calc(100dvh-84px)] w-full max-w-[1060px] flex-col overflow-hidden rounded-[18px] border border-white/12 bg-[#0b0817] shadow-[0_48px_120px_-40px_rgba(0,0,0,0.95)] focus:outline-none"
       >
         <header className="flex items-start gap-5 border-b border-white/10 px-5 py-4 sm:px-8 sm:py-5">
           <div className="min-w-0 flex-1">
@@ -89,7 +89,7 @@ export default function Sheet({ number, title, onClose, children }: Props) {
           </button>
         </header>
 
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-6 sm:px-8 sm:py-7">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-5 sm:px-8 sm:py-6">
           {children}
         </div>
       </div>
